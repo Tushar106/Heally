@@ -55,12 +55,20 @@ def search_nearby_places(place_type, keyword=None):
         # Prepare the list of places to return
         places = []
         for place in nearby_places['results']:
-            places.append({
+            place_info = {
                 'name': place['name'],
                 'address': place.get('vicinity'),
                 'rating': place.get('rating'),
                 'user_ratings_total': place.get('user_ratings_total')
-            })
+            }
+            # Check if the place has a photo and include the photo URL if available
+            if 'photos' in place:
+                photo_reference = place['photos'][0]['photo_reference']
+                place_info['image_url'] = f"https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference={photo_reference}&key={os.environ['GOOGLE_MAPS_API_KEY']}"
+            else:
+                place_info['image_url'] = None
+
+            places.append(place_info)
 
         if not places:
             return jsonify({'error': f'No {place_type}s found'}), 404
