@@ -73,7 +73,7 @@ def search_nearby_places(place_type, keyword=None):
         if not places:
             return jsonify({'error': f'No {place_type}s found'}), 404
 
-        return jsonify({f'{place_type}s': places})
+        return jsonify({f'{place_type}': places})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
