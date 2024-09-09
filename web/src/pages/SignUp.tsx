@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
+//@ts-expect-error -- test
+import { useFirebase } from '@/context/Firebase'
 
 export const SignUp = () => {
   const [email, setEmail] = useState('')
@@ -15,10 +17,15 @@ export const SignUp = () => {
   const navigate = useNavigate()
   const { toast } = useToast();
 
+  const { signupUserWithEmailAndPassword } = useFirebase();
 
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
+    console.log("signing in")
+    const result = await signupUserWithEmailAndPassword(email, password)
+    console.log(result)
+    console.log("success")
     toast({
       title: "Account created",
       description: "You've successfully signed up!",
