@@ -14,17 +14,23 @@ export default function Home() {
   return (
     <GestureHandlerRootView style={style.container}>
       <BottomSheetModalProvider>
-        <Tab.Navigator screenOptions={{headerShown: false, tabBarActiveTintColor: "#01C77D", tabBarStyle: { backgroundColor: "black",borderTopWidth:0 }, tabBarLabelPosition: "beside-icon", tabBarLabelStyle: { fontSize: 15 }, tabBarHideOnKeyboard: true }}>
+        <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: "#01C77D", tabBarStyle: { backgroundColor: "black", borderTopWidth: 0 }, tabBarLabelPosition: "beside-icon", tabBarLabelStyle: { fontSize: 15 }, tabBarHideOnKeyboard: true }}>
           <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: ({ size, color }) => <FontAwesome name="home" size={size} color={color} /> }} />
-          <Tab.Screen name="Search" component={SearchScreenNavigation} options={{
-            unmountOnBlur:true,
-            tabBarIcon: ({ size, color }) => <FontAwesome name="search" size={size} color={color} />
-          }
-          } />
-          <Tab.Screen name="Profile" component={ProfileNavigation} options={{ unmountOnBlur:true, tabBarIcon: ({ size, color }) => <FontAwesome name="user-circle" size={size} color={color} /> }} />
+          <Tab.Screen name="Search" component={SearchScreenNavigation} initialParams={{ searchElement: "" }} listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.navigate('Search');
+            },
+          })}
+            options={{
+              unmountOnBlur: true,
+              tabBarIcon: ({ size, color }) => <FontAwesome name="search" size={size} color={color} />
+            }
+            } />
+          <Tab.Screen name="Profile" component={ProfileNavigation} options={{ unmountOnBlur: true, tabBarIcon: ({ size, color }) => <FontAwesome name="user-circle" size={size} color={color} /> }} />
         </Tab.Navigator>
       </BottomSheetModalProvider>
-    </GestureHandlerRootView> 
+    </GestureHandlerRootView>
   )
 }
 const style = StyleSheet.create({

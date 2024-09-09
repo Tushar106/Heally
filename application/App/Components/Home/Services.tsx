@@ -27,7 +27,7 @@ export function Services({navigation}) {
                     return (
                         <View style={{ width: "50%" }} key={index}>
                             <TouchableOpacity key={index} style={{ padding: 10, margin: 5, flex:1, flexDirection: "row", backgroundColor: "#3c3c3c", borderWidth: 1, borderColor: "#9B9797", borderRadius: 5, gap: 5, justifyContent: "center", alignItems: "center" }} onPress={()=>{
-                                navigation.navigate('Search',{screen:"SearchScreen",params:{searchElement:item.type}})
+                                navigation.navigate('Search',{searchElement:item.type})
                             }}>
                                 <Text style={{ fontSize: 22, color: "white", fontWeight: "500", width: "70%", textAlign: 'center' }}>{item.type}</Text>
                                 {item.icon}

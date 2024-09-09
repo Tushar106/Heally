@@ -13,11 +13,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const Profile = ({ navigation, route }) => {
   const { user, logout, uploadImage, profileImage } = useContext(AuthContext)
-  const [isPremium, setIsPremium] = useState(false);
   const handleLogout = async () => {
     await logout();
   }
-
   const [file, setFile] = useState(null);
   const [upload, setUpload] = useState(true);
   const pickImage = async () => {
@@ -26,7 +24,6 @@ const Profile = ({ navigation, route }) => {
       requestMediaLibraryPermissionsAsync();
 
     if (status !== "granted") {
-
       // If permission is denied, show an alert 
       return Alert.alert(
         "Permission Denied",
@@ -85,7 +82,6 @@ const Profile = ({ navigation, route }) => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
