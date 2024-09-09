@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,7 +14,7 @@ export const SignIn = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
 
-  const { signinUserWithEmailAndPass } = useFirebase();
+  const { signinUserWithEmailAndPass, isLoggedIn } = useFirebase();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,6 +26,13 @@ export const SignIn = () => {
     })
     navigate('/dashboard') 
   }
+
+  // useEffect(() => {
+  //   if(isLoggedIn) {
+  //     navigate('/dashboard')
+  //   }
+    
+  // }, [isLoggedIn, navigate])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-100">

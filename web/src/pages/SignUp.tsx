@@ -6,14 +6,13 @@ import { Label } from "@/components/ui/label"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
-//@ts-expect-error -- test
 import { useFirebase } from '@/context/Firebase'
 
 export const SignUp = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [hospitalName, setHospitalName] = useState('')
+  const [address, setAddress] = useState('')
   const navigate = useNavigate()
   const { toast } = useToast();
 
@@ -23,7 +22,7 @@ export const SignUp = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     console.log("signing in")
-    const result = await signupUserWithEmailAndPassword(email, password)
+    const result = await signupUserWithEmailAndPassword(email, password, name, address)
     console.log(result)
     console.log("success")
     toast({
@@ -56,8 +55,8 @@ export const SignUp = () => {
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="hospital">Hospital Name</Label>
-                <Input id="hospital" placeholder="General Hospital" value={hospitalName} onChange={(e) => setHospitalName(e.target.value)} required />
+                <Label htmlFor="hospital">Address</Label>
+                <Input id="hospital" placeholder="Park Hospital, New Delhi, Delhi" value={address} onChange={(e) => setAddress(e.target.value)} required />
               </div>
             </div>
             <Button className="w-full mt-6" type="submit">Sign Up</Button>
