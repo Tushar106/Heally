@@ -7,6 +7,7 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { StyleSheet } from 'react-native'
 import SearchScreenNavigation from './SearchScreenNavigation'
+import ProfileNavigation from './ProfileNavigation';
 
 export default function Home() {
   const Tab = createBottomTabNavigator()
@@ -20,7 +21,7 @@ export default function Home() {
             tabBarIcon: ({ size, color }) => <FontAwesome name="search" size={size} color={color} />
           }
           } />
-          <Tab.Screen name="Profile" component={Profile} options={{ tabBarIcon: ({ size, color }) => <FontAwesome name="user-circle" size={size} color={color} /> }} />
+          <Tab.Screen name="Profile" component={ProfileNavigation} options={{ unmountOnBlur:true, tabBarIcon: ({ size, color }) => <FontAwesome name="user-circle" size={size} color={color} /> }} />
         </Tab.Navigator>
       </BottomSheetModalProvider>
     </GestureHandlerRootView> 
