@@ -5,12 +5,18 @@ import SearchItems from '../Components/Search/SearchItems';
 import { useEffect, useState } from 'react';
 import Loading from '../Components/Loading';
 export default function SearchScreen({ navigation, route }) {
-    console.log(route.params)
+    const searchType=route.params.searchElement
     const [search, setSearch] = useState(route.params.searchElement)
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     useEffect(() => {
+        if(searchType!==""){
+            fetchData(searchType)
+        }
+    }, [search])
+    const fetchData = (type) => {
         setLoading(true)
+        console.log(searchType)
         fetch("https://heallyserver-ba802f7f8155.herokuapp.com/nearby_places", {
             method: "POST",
             headers: {
@@ -19,7 +25,7 @@ export default function SearchScreen({ navigation, route }) {
             },
             body: JSON.stringify({
                 address: "Varanasi",
-                type: "hospital"
+                type: type
             }),
         })
             .then((response) => response.json())
@@ -28,14 +34,14 @@ export default function SearchScreen({ navigation, route }) {
                 setData(responseData);
                 setLoading(false)
             })
-    }, [search, route.params.searchElement])
+    }
     return (
         <ScrollView style={style.container}>
             <SearchBar search={search} setSearch={setSearch} />
             {!loading ?
                 <>
-                    <SearchItems navigation={navigation} />
-                </> : 
+                    <SearchItems navigation={navigation} data={data} />
+                </> :
                 <Loading size={100} />}
         </ScrollView>
     )
@@ -46,7 +52,7 @@ const style = StyleSheet.create({
         padding: 10,
         flex: 1,
         gap: 20,
-        minHeight:100,
-        minWidth:100
+        minHeight: 100,
+        minWidth: 100
     }
 })

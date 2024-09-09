@@ -16,7 +16,7 @@ export default function Home() {
       <BottomSheetModalProvider>
         <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: "#01C77D", tabBarStyle: { backgroundColor: "black", borderTopWidth: 0 }, tabBarLabelPosition: "beside-icon", tabBarLabelStyle: { fontSize: 15 }, tabBarHideOnKeyboard: true }}>
           <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarIcon: ({ size, color }) => <FontAwesome name="home" size={size} color={color} /> }} />
-          <Tab.Screen name="Search" component={SearchScreenNavigation} initialParams={{ searchElement: "" }} listeners={({ navigation }) => ({
+          <Tab.Screen name="Search" component={SearchScreenNavigation} initialParams={{ searchElement: "doctor" }} listeners={({ navigation }) => ({
             tabPress: (e) => {
               e.preventDefault();
               navigation.navigate('Search');

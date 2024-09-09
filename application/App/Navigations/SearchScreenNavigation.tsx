@@ -9,7 +9,6 @@ import ThanksScreen from '../Screens/ThanksScreen';
 export default function SearchScreenNavigation({route,navigation}) {
     const Stack=createNativeStackNavigator();
     const searchElement=route.params.searchElement;
-    // console.log(route.params)
   return (
     <Stack.Navigator screenOptions={{headerTintColor:"white"}}>
         <Stack.Screen name='SearchScreen' initialParams={{searchElement:searchElement}} component={SearchScreen} options={{headerShown:false}}/>

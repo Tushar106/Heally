@@ -3,15 +3,16 @@ import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import Entypo from '@expo/vector-icons/Entypo';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
-export default function SearchItems({ navigation }) {
+export default function SearchItems({ navigation,data }) {
   const handlePress = () => {
     navigation.navigate('Doctor Profile')
   }
   return (
-    <View style={{ flex: 1, flexDirection: "column", padding: 10 }}>
-      <TouchableOpacity style={{ width: "100%", backgroundColor: "white", padding: 10, borderRadius: 5, gap: 10 }} onPress={handlePress}>
+    <ScrollView style={{ flex: 1, flexDirection: "column", padding: 10 }}>
+      {<TouchableOpacity style={{ width: "100%", backgroundColor: "white", padding: 10, borderRadius: 5, gap: 10 }} onPress={handlePress}>
         <View style={{ display: "flex", flexDirection: 'row', justifyContent: "center", alignItems: "center", borderBottomColor: "black", borderBottomWidth: .5, padding: 5 }}>
           <Image source={{ uri: "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg" }} width={60} height={60} borderRadius={100} />
           <View style={{ flex: 1, margin: 5 }}>
@@ -34,7 +35,7 @@ export default function SearchItems({ navigation }) {
             <FontAwesome name="money" size={20} color="green" /><Text>200$</Text>
           </View>
         </View>
-      </TouchableOpacity>
-    </View>
+      </TouchableOpacity>}
+    </ScrollView>
   )
 }

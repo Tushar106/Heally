@@ -5,15 +5,18 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Fontisto from '@expo/vector-icons/Fontisto';
 
 export function Services({navigation}) {
-    const services = [{ type: 'Hospitals', icon: <FontAwesome5 name="hospital-alt" size={40} color="green" /> }, {
-        type: "Doctors",
+    const services = [{ name:"Hospitals",type: 'hospital', icon: <FontAwesome5 name="hospital-alt" size={40} color="green" /> }, {
+        type: "doctors",
+        name:"Doctors",
         icon: <Fontisto name="doctor" size={40} color="white" />
     }, {
-        type: "Labs",
+        name:"Labs",
+        type: "lab",
         icon: <FontAwesome5 name="file-medical" size={40} color="white" />
     },
     {
-        type: "Medicines",
+        name:"Medicines",
+        type: "pharmacy",
         icon: <FontAwesome5 name="hand-holding-medical" size={40} color="green" />
     }]
     return (
@@ -29,7 +32,7 @@ export function Services({navigation}) {
                             <TouchableOpacity key={index} style={{ padding: 10, margin: 5, flex:1, flexDirection: "row", backgroundColor: "#3c3c3c", borderWidth: 1, borderColor: "#9B9797", borderRadius: 5, gap: 5, justifyContent: "center", alignItems: "center" }} onPress={()=>{
                                 navigation.navigate('Search',{searchElement:item.type})
                             }}>
-                                <Text style={{ fontSize: 22, color: "white", fontWeight: "500", width: "70%", textAlign: 'center' }}>{item.type}</Text>
+                                <Text style={{ fontSize: 22, color: "white", fontWeight: "500", width: "70%", textAlign: 'center' }}>{item.name}</Text>
                                 {item.icon}
                             </TouchableOpacity>
                         </View>
