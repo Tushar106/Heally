@@ -23,6 +23,8 @@ interface FirebaseContextType {
     password: string,
     name: string,
     address: string,
+    fees: number,
+    specialty: string,
     isDoctor: boolean
   ) => Promise<UserCredential>;
   signinUserWithEmailAndPass: (
@@ -70,6 +72,8 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     name: string,
     address: string,
+    fees: number,
+    specialty: string,
     isDoctor: boolean,
   ): Promise<UserCredential> => {
     // createUserWithEmailAndPassword(auth, email, password);
@@ -85,6 +89,8 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
         email: response?.user?.email,
         name,
         address,
+        fees,
+        specialty,
         isDoctor,
       });
       console.log(response);
