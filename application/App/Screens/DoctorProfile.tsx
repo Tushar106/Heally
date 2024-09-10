@@ -3,21 +3,29 @@ import React, { useEffect, useState } from 'react'
 import Entypo from '@expo/vector-icons/Entypo';
 import { FontAwesome } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
 
-export default function DoctorProfile({ navigation,route }) {
+export default function DoctorProfile({ navigation, route }) {
     const [selectedDate, setSelectedDate] = useState(0);
     const [selectedTime, setSelectedTime] = useState(-1);
-    const doctor=route.params.data
+    const [busyDates, setBusyDates] = useState([]);
 
-    const dates = ['Today', 'Tomorrow', new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toDateString(), new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toDateString()];
+    const doctor = route.params.data
+
+    const dates = ['Today', 'Tomorrow',new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toDateString(), new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toDateString()];
     const startTime = 10; // Start time in 24-hour format
     const endTime = 18; // End time in 24-hour format
     const timeSlot = Array(endTime - startTime + 1).fill(null).map((_, index) => {
         const hour = startTime + index;
         return `${hour % 12 || 12}:${'00'} ${hour < 12 ? 'AM' : 'PM'}`;
     });
-    const [currentTime, setCurrentTime] = useState(new Date());
+    // const timeSlot = Array(endTime - startTime + 1).fill(null).map((_, index) => `${startTime + index}:00`);
 
+    const [currentTime, setCurrentTime] = useState(new Date());
+    useEffect(() => {
+        fetchBookedDates();
+    }, []);
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
@@ -53,10 +61,14 @@ export default function DoctorProfile({ navigation,route }) {
         }
         const selectedTimeObj = new Date();
         selectedTimeObj.setHours(parseInt(timeSlot[selectedTime].split(':')[0]), 0, 0, 0);
+        const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${timeSlot[selectedTime]}`);
+        if(isBusy){
+            return alert('Selected busy slot.');
+        }
         if (selectedDateObj >= new Date() || (selectedDateObj.toDateString() === new Date().toDateString() && selectedTimeObj > new Date())) {
             const formattedDate = selectedDateObj.toLocaleString('default', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
             navigation.navigate('Confirmation', {
-                selectedDate:formattedDate,
+                selectedDate: formattedDate,
                 selectedTime: timeSlot[selectedTime],
                 doctor: doctor
             });
@@ -64,17 +76,47 @@ export default function DoctorProfile({ navigation,route }) {
             alert('Selected date and time is in the past. Please select a future date and time.');
         }
     }
+
+    const fetchBookedDates = async () => {
+        const appointments = doctor.appointments || [];
+        const busyDatesSet = new Set();
+
+        for (const appointmentId of appointments) {
+            const appointmentRef = doc(db, 'appointments', appointmentId);
+            const appointmentSnap = await getDoc(appointmentRef);
+
+            if (appointmentSnap.exists()) {
+                const appointmentData = appointmentSnap.data();
+                busyDatesSet.add(`${appointmentData.date}-${appointmentData.time}`);
+            }
+        }
+        setBusyDates(Array.from(busyDatesSet));
+    }
+    function formatDate(date) {
+        var selectedDateObj = new Date(date);
+        if (selectedDate == 0) {
+            selectedDateObj = new Date();
+        }
+        if (selectedDate == 1) {
+            selectedDateObj = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
+        }
+        const formattedDate = selectedDateObj.toLocaleString('default', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
+        return formattedDate
+    }
+
+
     return (
         <SafeAreaView style={{ flex: 1, flexDirection: "column", padding: 10 }}>
             <ScrollView >
                 <View style={{ width: "100%", backgroundColor: "#f3f6f5", padding: 10, borderRadius: 5, gap: 10 }}>
                     <View style={{ display: "flex", flexDirection: 'row', justifyContent: "center", alignItems: "center" }}>
-                        <Image source={{ uri: "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg" }} width={60} height={60} borderRadius={100} />
+                        <Image source={{ uri: doctor.profileImage?doctor.profileImage:"https://familydoctor.org/wp-content/uploads/2018/02/41808433_l.jpg" }} width={60} height={60} borderRadius={100} />
                         <View style={{ flex: 1, margin: 5 }}>
                             <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                 <Text style={{ color: "green" }}>Doctor</Text>
                             </View>
                             <Text style={{ fontSize: 18, fontWeight: "700" }}>{doctor.name}</Text>
+                            <Text>{doctor.specialty}</Text>
                             <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
                                 <Text style={{ backgroundColor: "#ebf5f4", color: "#8ecbaf", padding: 1, borderRadius: 5 }}>#Comfortable waiting area</Text>
                                 <Text style={{ backgroundColor: "#ebf5f4", color: "#8ecbaf", padding: 1, borderRadius: 5 }}>#Clean</Text>
@@ -89,7 +131,7 @@ export default function DoctorProfile({ navigation,route }) {
                             <FontAwesome name="money" size={30} color="green" />
                             <View style={{ display: "flex", flexDirection: "column" }}>
                                 <Text style={{ fontSize: 12, color: "grey", fontWeight: "400" }}>Fees</Text>
-                                <Text>200$</Text>
+                                <Text>{doctor.fees}</Text>
                             </View>
                         </View>
                         <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: 'center', gap: 10 }}>
@@ -118,26 +160,28 @@ export default function DoctorProfile({ navigation,route }) {
                         <View style={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", flexWrap: 'wrap' }}>
                             {timeSlot.map((time, index) => {
                                 const isPast = selectedDate === 0 && new Date().getHours() >= startTime + index;
+                                const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${time}`);
                                 return (
                                     <View style={{ width: "33.33%", padding: 5 }} key={index}>
                                         <TouchableOpacity
                                             key={index}
-                                            style={[styles.box, isPast ? styles.past : selectedTime === index && styles.selected]}
-                                            onPress={() => !isPast && setSelectedTime(index)}
-                                            disabled={isPast}
+                                            style={[styles.box, isPast || isBusy ? styles.past : selectedTime === index && styles.selected]}
+                                            onPress={() => !isPast &&!isBusy && setSelectedTime(index)}
+                                            disabled={isPast || isBusy}
                                         >
                                             <Text style={{ color: selectedTime == index ? "#30a16a" : "black", fontWeight: "600" }}>{time}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 )
                             })}
+
                         </View>
                     </View>
                     <View>
                         <Text style={{ fontSize: 20, fontWeight: "700" }}>About</Text>
-                        <Text style={{ fontSize: 15 }}>Dr. Mohammad Ansari is a well known doctor in the field of Gynecology and Pharma. He has been working in the field for more than 10 years. He has a good reputation among his patients.</Text>
+                        <Text style={{ fontSize: 15 }}>{doctor.about? doctor.about:<>Dr. Mohammad Ansari is a well known doctor in the field of Gynecology and Pharma. He has been working in the field for more than 10 years. He has a good reputation among his patients.</>}</Text>
                     </View>
-                    <TouchableOpacity style={{ width: "100%", padding: 10, borderRadius: 5, backgroundColor: "green", alignItems: "center", flex: 1, justifyContent: "center" }} onPress={()=>handleBooking(doctor)}>
+                    <TouchableOpacity style={{ width: "100%", padding: 10, borderRadius: 5, backgroundColor: "green", alignItems: "center", flex: 1, justifyContent: "center" }} onPress={() => handleBooking(doctor)}>
                         <Text style={{ fontSize: 18, fontWeight: "700", color: "white" }}>Book</Text>
                     </TouchableOpacity>
                 </View>

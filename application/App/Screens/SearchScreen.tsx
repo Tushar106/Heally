@@ -42,7 +42,7 @@ export default function SearchScreen({ navigation, route }) {
     return (
         <ScrollView style={style.container}>
             <SearchBar search={search} setSearch={setSearch} />
-            <Options/>
+            {searchType=='doctor'&&<Options/>}
             {!loading && data ?
                 <>
                     <SearchItems navigation={navigation} data={data[searchType]} searchType={searchType} />

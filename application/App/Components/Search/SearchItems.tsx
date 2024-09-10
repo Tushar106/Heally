@@ -21,6 +21,9 @@ export default function SearchItems({ navigation, data, searchType }) {
     const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
     Linking.openURL(url);
   };
+  function capitalizeFLetter(string) {
+    return string[0].toUpperCase() +string.slice(1);
+}
   return (
     <ScrollView>
       <View style={{ flex: 1, flexDirection: "column", padding: 10, gap: 10 }}>
@@ -31,10 +34,11 @@ export default function SearchItems({ navigation, data, searchType }) {
                 <Image source={{ uri: item["image_url"] }} width={60} height={60} borderRadius={100} />
                 <View style={{ flex: 1, margin: 5 }}>
                   <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                    <Text style={{ color: "green" }}>{searchType}</Text>
+                    <Text style={{ color: "green" }}>{capitalizeFLetter(searchType)}</Text>
                     {searchType!="doctor"&&<StarRating rating={item.rating} />}
                   </View>
                   <Text style={{ fontSize: 18, fontWeight: "700" }}>{item.name}</Text>
+                  {searchType=='doctor'&&<Text>{item.specialty}</Text>}
                 </View>
               </View>
               <View style={{ paddingLeft: 5, display: "flex", gap: 7 }}>

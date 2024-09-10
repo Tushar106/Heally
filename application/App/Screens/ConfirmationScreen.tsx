@@ -15,7 +15,6 @@ export default function ConfirmationScreen({ navigation, route }) {
         setLoading(true);
         try {
             // Add the appointment to the appointments collection
-
             const appointment= await addDoc(collection(db, "appointments"), {
                 doctorName: doctor.name,
                 patientName: user.displayName,
@@ -31,7 +30,7 @@ export default function ConfirmationScreen({ navigation, route }) {
             });
 
             // Update the doctor document with the appointment UID
-            await updateDoc(doc(db, 'users', doctor.uid), {
+            await updateDoc(doc(db, 'users', doctor.userId), {
                 appointments: arrayUnion(await appointment.id),
             });
             setLoading(false);
@@ -51,7 +50,7 @@ export default function ConfirmationScreen({ navigation, route }) {
                             <Text style={{ color: "green" }}>Doctor</Text>
                         </View>
                         <Text style={{ fontSize: 18, fontWeight: "700" }}>{doctor.name}</Text>
-                        <Text>general</Text>
+                        <Text>{doctor.specialty}</Text>
                         <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
                             <Text style={{ backgroundColor: "#ebf5f4", color: "#8ecbaf", padding: 1, borderRadius: 5 }}>#Comfortable waiting area</Text>
                             <Text style={{ backgroundColor: "#ebf5f4", color: "#8ecbaf", padding: 1, borderRadius: 5 }}>#Clean</Text>
@@ -73,7 +72,7 @@ export default function ConfirmationScreen({ navigation, route }) {
                         <FontAwesome name="money" size={30} color="green" />
                         <View style={{ display: "flex", flexDirection: "column" }}>
                             <Text style={{ fontSize: 12, color: "grey", fontWeight: "400" }}>Fees</Text>
-                            <Text>200$</Text>
+                            <Text>{doctor.fees}</Text>
                         </View>
                     </View>
                     <View style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: 'center', gap: 10 }}>
