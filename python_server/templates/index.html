@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Places and Doctors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        .results {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .place {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .place:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Find Nearby Places or Doctors</h2>
+    <input type="text" id="lat" placeholder="Enter your latitude" />
+    <br />
+    <input type="text" id="lng" placeholder="Enter your longitude" />
+    <br />
+    <input type="text" id="type" placeholder="Enter type (doctor, hospital, pharmacy, lab)" />
+    <br />
+    <button id="searchBtn" onclick="searchPlaces()">Search</button>
+    
+    <div class="results" id="results"></div>
+</div>
+
+<script>
+    async function searchPlaces() {
+        const lat = document.getElementById('lat').value;
+        const lng = document.getElementById('lng').value;
+        const type = document.getElementById('type').value.toLowerCase();
+
+        if (!lat || !lng || !type) {
+            alert('Please enter latitude, longitude, and place type');
+            return;
+        }
+
+        document.getElementById('searchBtn').disabled = true;
+        document.getElementById('results').innerHTML = 'Searching...';
+
+        try {
+            const response = await fetch('/nearby_places', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ lat, lng, type })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                if (type === 'doctor') {
+                    displayDoctors(data['doctor'] || []);
+                } else {
+                    displayResults(data[`${type}`] || []);
+                }
+            } else {
+                document.getElementById('results').innerHTML = `<p>Error: ${data.error}</p>`;
+            }
+        } catch (error) {
+            document.getElementById('results').innerHTML = '<p>An error occurred</p>';
+        }
+
+        document.getElementById('searchBtn').disabled = false;
+    }
+
+    function displayResults(places) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+
+        if (places.length === 0) {
+            resultsDiv.innerHTML = '<p>No places found</p>';
+            return;
+        }
+
+        places.forEach(place => {
+            const placeDiv = document.createElement('div');
+            placeDiv.classList.add('place');
+
+            const placeDetails = `
+                <strong>${place.name}</strong><br />
+                Address: ${place.address || 'N/A'}<br />
+                Rating: ${place.rating || 'N/A'} (${place.user_ratings_total || 0} reviews)
+            `;
+
+            placeDiv.innerHTML = placeDetails;
+            resultsDiv.appendChild(placeDiv);
+        });
+    }
+
+    function displayDoctors(doctors) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+
+        if (doctors.length === 0) {
+            resultsDiv.innerHTML = '<p>No doctors found within 10 km radius</p>';
+            return;
+        }
+
+        doctors.forEach(doctor => {
+            const doctorDiv = document.createElement('div');
+            doctorDiv.classList.add('place');
+
+            const doctorDetails = `
+                <strong>${doctor.name}</strong><br />
+                Address: ${doctor.address || 'N/A'}<br />
+                Distance: ${doctor.distance_km.toFixed(2)} km<br />
+            `;
+
+            doctorDiv.innerHTML = doctorDetails;
+            resultsDiv.appendChild(doctorDiv);
+        });
+    }
+</script>
+
+</body>
+</html>
