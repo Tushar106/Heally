@@ -11,6 +11,8 @@ export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [profileImage, setProfileImage] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(undefined)
+    const [location, setLocation] = useState(null);
+
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, async (user) => {
@@ -124,6 +126,8 @@ export const AuthContextProvider = ({ children }) => {
         logout,
         register,
         uploadImage,
+        location,
+        setLocation
     };
 
     return (

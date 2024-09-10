@@ -1,10 +1,10 @@
 import { View, Text, Image, TouchableOpacity, Pressable, StyleSheet, Linking } from 'react-native'
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
 import Entypo from '@expo/vector-icons/Entypo';
 import { ScrollView } from 'react-native-gesture-handler';
 import Loading from '../Loading';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function SearchItems({ navigation, data, searchType }) {
@@ -12,7 +12,7 @@ export default function SearchItems({ navigation, data, searchType }) {
     navigation.navigate('Doctor Profile')
   }
   if (data == undefined) {
-    return <Loading size={100} />
+    return (<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Loading size={100} /></View>)
   }
   const openGoogleMaps = (address) => {
     const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
@@ -23,7 +23,7 @@ export default function SearchItems({ navigation, data, searchType }) {
       <View style={{ flex: 1, flexDirection: "column", padding: 10, gap: 10 }}>
         {data.map((item, index) => {
           return (
-            <TouchableOpacity style={{ width: "100%", backgroundColor: "white", padding: 10, borderRadius: 5, gap: 10 }} onPress={()=>{searchType==="doctor"?handlePress():openGoogleMaps(item.address)}}>
+            <TouchableOpacity key={index} style={{ width: "100%", backgroundColor: "white", padding: 10, borderRadius: 5, gap: 10 }} onPress={() => { searchType === "doctor" ? handlePress() : openGoogleMaps(item.address) }}>
               <View style={{ display: "flex", flexDirection: 'row', justifyContent: "center", alignItems: "center", borderBottomColor: "black", borderBottomWidth: .5, padding: 5 }}>
                 <Image source={{ uri: item["image_url"] }} width={60} height={60} borderRadius={100} />
                 <View style={{ flex: 1, margin: 5 }}>

@@ -1,13 +1,14 @@
 import { View, Text, StyleSheet, ScrollView, Image, ImageBackground, Pressable, } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../Components/Home/Header'
 
 import Poster from '../Components/Home/Poster';
 import * as Location from 'expo-location';
 import { Services } from '../Components/Home/Services';
+import { AuthContext } from '../Components/Context/AuthContext';
 
 export default function HomeScreen({ navigation }) {
-  const [location, setLocation] = useState(null);
+  const {location, setLocation} = useContext(AuthContext)
   const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
@@ -24,13 +25,7 @@ export default function HomeScreen({ navigation }) {
     })();
   }, []);
 
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
-
+  console.log(location)
   return (
     <View style={style.container}>
       <Header />

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import SearchBar from '../Components/Search/SearchBar';
 import Options from '../Components/Search/Options';
 import SearchItems from '../Components/Search/SearchItems';
@@ -30,7 +30,7 @@ export default function SearchScreen({ navigation, route }) {
         })
             .then((response) => response.json())
             .then((responseData) => {
-                // console.log(responseData)
+                console.log(responseData)
                 setData(responseData);
                 setLoading(false)
             })
@@ -42,7 +42,7 @@ export default function SearchScreen({ navigation, route }) {
                 <>
                     <SearchItems navigation={navigation} data={data[searchType]} searchType={searchType} />
                 </> :
-                <Loading size={100} />}
+                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Loading size={100} /></View>}
         </ScrollView>
     )
 }
