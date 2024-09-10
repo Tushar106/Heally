@@ -4,9 +4,10 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { FontAwesome } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function DoctorProfile({ navigation }) {
+export default function DoctorProfile({ navigation,route }) {
     const [selectedDate, setSelectedDate] = useState(0);
     const [selectedTime, setSelectedTime] = useState(-1);
+    const doctor=route.params.data
 
     const dates = ['Today', 'Tomorrow', new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toDateString(), new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toDateString()];
     const startTime = 10; // Start time in 24-hour format
@@ -39,7 +40,7 @@ export default function DoctorProfile({ navigation }) {
             });
         }
     }, [])
-    const handleBooking = () => {
+    const handleBooking = (doctor) => {
         if (selectedTime == -1) {
             return alert("Please select a Time");
         }
@@ -56,7 +57,8 @@ export default function DoctorProfile({ navigation }) {
             const formattedDate = selectedDateObj.toLocaleString('default', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
             navigation.navigate('Confirmation', {
                 selectedDate:formattedDate,
-                selectedTime: timeSlot[selectedTime]
+                selectedTime: timeSlot[selectedTime],
+                doctor: doctor
             });
         } else {
             alert('Selected date and time is in the past. Please select a future date and time.');
@@ -72,8 +74,7 @@ export default function DoctorProfile({ navigation }) {
                             <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                                 <Text style={{ color: "green" }}>Doctor</Text>
                             </View>
-                            <Text style={{ fontSize: 18, fontWeight: "700" }}>Mohammad Ansari</Text>
-                            <Text>Park Hospitals</Text>
+                            <Text style={{ fontSize: 18, fontWeight: "700" }}>{doctor.name}</Text>
                             <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
                                 <Text style={{ backgroundColor: "#ebf5f4", color: "#8ecbaf", padding: 1, borderRadius: 5 }}>#Comfortable waiting area</Text>
                                 <Text style={{ backgroundColor: "#ebf5f4", color: "#8ecbaf", padding: 1, borderRadius: 5 }}>#Clean</Text>
@@ -81,7 +82,7 @@ export default function DoctorProfile({ navigation }) {
                         </View>
                     </View>
                     <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 7 }}>
-                        <Entypo name="location-pin" size={24} color="green" /><Text>Park Hospital, Murthal</Text>
+                        <Entypo name="location-pin" size={24} color="green" /><Text>{doctor.address}</Text>
                     </View>
                     <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 7 }}>
                         <View style={{ flex: 1, flexDirection: "row", borderRightColor: "black", borderRightWidth: 1, justifyContent: "center", alignItems: 'center', gap: 10 }}>
@@ -136,7 +137,7 @@ export default function DoctorProfile({ navigation }) {
                         <Text style={{ fontSize: 20, fontWeight: "700" }}>About</Text>
                         <Text style={{ fontSize: 15 }}>Dr. Mohammad Ansari is a well known doctor in the field of Gynecology and Pharma. He has been working in the field for more than 10 years. He has a good reputation among his patients.</Text>
                     </View>
-                    <TouchableOpacity style={{ width: "100%", padding: 10, borderRadius: 5, backgroundColor: "green", alignItems: "center", flex: 1, justifyContent: "center" }} onPress={handleBooking}>
+                    <TouchableOpacity style={{ width: "100%", padding: 10, borderRadius: 5, backgroundColor: "green", alignItems: "center", flex: 1, justifyContent: "center" }} onPress={()=>handleBooking(doctor)}>
                         <Text style={{ fontSize: 18, fontWeight: "700", color: "white" }}>Book</Text>
                     </TouchableOpacity>
                 </View>

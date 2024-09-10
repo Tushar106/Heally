@@ -71,7 +71,9 @@ export const AuthContextProvider = ({ children }) => {
             await setDoc(doc(db, "users", response?.user?.uid), {
                 userId: response?.user?.uid,
                 email: response?.user?.email,
-                name: name
+                name: name,
+                appointments:[],
+                isDoctor:false
             })
             console.log(response)
             return { success: true, data: response?.user }

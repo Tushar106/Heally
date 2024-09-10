@@ -8,7 +8,7 @@ import { RadioButton } from 'react-native-paper';
 
 export default function Options() {
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-    const snapPoints = useMemo(() => ["40%"], []);
+    const snapPoints = useMemo(() => ["35%"], []);
     const handleSortBy = useCallback(() => {
         bottomSheetModalRef.current?.present();
     }, []);
@@ -44,10 +44,6 @@ const Modal = (props) => {
                         <Text style={{ fontWeight: "600", fontSize: 25, color: "black" }}>Sort By</Text>
                         <RadioButton.Group onValueChange={newValue => setValue(newValue)} value={value}>
                             <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
-                                <RadioButton value="first"/>
-                                <Text>Most Recommended</Text>
-                            </View>
-                            <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
                                 <RadioButton value="second" />
                                 <Text>Price: low to high</Text>
                             </View>
@@ -57,7 +53,7 @@ const Modal = (props) => {
                             </View>
                             <View style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
                                 <RadioButton value="fourth" />
-                                <Text>New</Text>
+                                <Text>None</Text>
                             </View>
                         </RadioButton.Group>
                     </View>

@@ -2,14 +2,17 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import SearchBar from '../Components/Search/SearchBar';
 import Options from '../Components/Search/Options';
 import SearchItems from '../Components/Search/SearchItems';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Loading from '../Components/Loading';
+import { AuthContext } from '../Components/Context/AuthContext';
 export default function SearchScreen({ navigation, route }) {
     const searchType = route.params.searchElement
     const [search, setSearch] = useState(route.params.searchElement)
     const [loading, setLoading] = useState(false);
+    const {location}=useContext(AuthContext);
     const [data, setData] = useState([]);
     useEffect(() => {
+        console.log(location)
         if (searchType !== "") {
             setLoading(true)
             fetchData(searchType)
@@ -24,7 +27,8 @@ export default function SearchScreen({ navigation, route }) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                address: "Varanasi",
+                lat:location.coords.latitude,
+                lng:location.coords.longitude,
                 type: type
             }),
         })
@@ -38,6 +42,7 @@ export default function SearchScreen({ navigation, route }) {
     return (
         <ScrollView style={style.container}>
             <SearchBar search={search} setSearch={setSearch} />
+            <Options/>
             {!loading && data ?
                 <>
                     <SearchItems navigation={navigation} data={data[searchType]} searchType={searchType} />

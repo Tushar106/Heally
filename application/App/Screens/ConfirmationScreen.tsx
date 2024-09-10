@@ -1,18 +1,45 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Entypo, FontAwesome, Ionicons } from '@expo/vector-icons'
 import Loading from '../Components/Loading';
+import { addDoc, arrayUnion, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { AuthContext } from '../Components/Context/AuthContext';
+import { db } from '../../firebaseConfig';
 
 export default function ConfirmationScreen({ navigation, route }) {
-    const { selectedDate, selectedTime } = route.params;
+    const { selectedDate, selectedTime, doctor } = route.params;
     const [loading, setLoading] = useState(false);
-    const handleConfirm = () => {
+    const {user}=useContext(AuthContext);
+        const handleConfirm = async() => {
         setLoading(true);
-        setTimeout(() => {
+        try {
+            // Add the appointment to the appointments collection
+
+            const appointment= await addDoc(collection(db, "appointments"), {
+                doctorName: doctor.name,
+                patientName: user.displayName,
+                date: selectedDate,
+                time: selectedTime,
+                status: 'confirmed',
+                doctorId:doctor.userId,
+                patientId:user.uid
+            })
+            // Update the user document with the appointment UID
+            await updateDoc(doc(db, 'users', user.uid), {
+                appointments: arrayUnion(await appointment.id),
+            });
+
+            // Update the doctor document with the appointment UID
+            await updateDoc(doc(db, 'users', doctor.uid), {
+                appointments: arrayUnion(await appointment.id),
+            });
             setLoading(false);
-            navigation.navigate("ThanksScreen");
-        },2000)
+            navigation.navigate('ThanksScreen');
+        } catch (error) {
+            console.error('Error adding appointment: ', error);
+            setLoading(false);
+        }
     }
     return (
         <View style={{ flex: 1, flexDirection: "column", padding: 10 }}>
@@ -23,8 +50,8 @@ export default function ConfirmationScreen({ navigation, route }) {
                         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <Text style={{ color: "green" }}>Doctor</Text>
                         </View>
-                        <Text style={{ fontSize: 18, fontWeight: "700" }}>Mohammad Ansari</Text>
-                        <Text>Park Hospitals</Text>
+                        <Text style={{ fontSize: 18, fontWeight: "700" }}>{doctor.name}</Text>
+                        <Text>general</Text>
                         <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
                             <Text style={{ backgroundColor: "#ebf5f4", color: "#8ecbaf", padding: 1, borderRadius: 5 }}>#Comfortable waiting area</Text>
                             <Text style={{ backgroundColor: "#ebf5f4", color: "#8ecbaf", padding: 1, borderRadius: 5 }}>#Clean</Text>
@@ -32,7 +59,7 @@ export default function ConfirmationScreen({ navigation, route }) {
                     </View>
                 </View>
                 <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 7 }}>
-                    <Entypo name="location-pin" size={30} color="green" /><Text style={{ fontSize: 18 }}>Park Hospital, Murthal</Text>
+                    <Entypo name="location-pin" size={30} color="green" /><Text style={{ fontSize: 18 }}>{doctor.address}</Text>
                 </View>
                 <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 7 }}>
                     <AntDesign name="calendar" size={30} color="green" />

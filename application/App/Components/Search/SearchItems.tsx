@@ -8,8 +8,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function SearchItems({ navigation, data, searchType }) {
-  const handlePress = () => {
-    navigation.navigate('Doctor Profile')
+  const handlePress = (data) => {
+    // console.log(data)
+    navigation.navigate('Doctor Profile',{
+      data:data
+    })
   }
   if (data == undefined) {
     return (<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Loading size={100} /></View>)
@@ -23,13 +26,13 @@ export default function SearchItems({ navigation, data, searchType }) {
       <View style={{ flex: 1, flexDirection: "column", padding: 10, gap: 10 }}>
         {data.map((item, index) => {
           return (
-            <TouchableOpacity key={index} style={{ width: "100%", backgroundColor: "white", padding: 10, borderRadius: 5, gap: 10 }} onPress={() => { searchType === "doctor" ? handlePress() : openGoogleMaps(item.address) }}>
+            <TouchableOpacity key={index} style={{ width: "100%", backgroundColor: "white", padding: 10, borderRadius: 5, gap: 10 }} onPress={() => { searchType === "doctor" ? handlePress(item) : openGoogleMaps(item.address) }}>
               <View style={{ display: "flex", flexDirection: 'row', justifyContent: "center", alignItems: "center", borderBottomColor: "black", borderBottomWidth: .5, padding: 5 }}>
                 <Image source={{ uri: item["image_url"] }} width={60} height={60} borderRadius={100} />
                 <View style={{ flex: 1, margin: 5 }}>
                   <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                     <Text style={{ color: "green" }}>{searchType}</Text>
-                    <StarRating rating={item.rating} />
+                    {searchType!="doctor"&&<StarRating rating={item.rating} />}
                   </View>
                   <Text style={{ fontSize: 18, fontWeight: "700" }}>{item.name}</Text>
                 </View>
