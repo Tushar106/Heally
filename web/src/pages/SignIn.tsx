@@ -14,7 +14,7 @@ export const SignIn = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
 
-  const { signinUserWithEmailAndPass, isLoggedIn } = useFirebase();
+  const { signinUserWithEmailAndPass } = useFirebase();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()

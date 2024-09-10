@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { format, addDays } from "date-fns";
+import { useFirebase } from "@/context/Firebase";
+import { useNavigate } from "react-router-dom";
 
 type Appointment = {
   id: number;
@@ -60,6 +62,8 @@ const appointmentsData: Appointment[] = [
 export const Dashboard: React.FC = () => {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(today);
+  const { isLoggedIn, logout } = useFirebase();
+  const navigate = useNavigate();
 
   // Define the next two days for button options
   const dateOptions = [today, addDays(today, 1), addDays(today, 2)];
@@ -69,12 +73,23 @@ export const Dashboard: React.FC = () => {
       appointment.date === format(selectedDate, "MMM d, yyyy")
   );
 
+  const handleLogout = async () => {
+    await logout();
+    navigate("/signin")
+  }
+
   return (
     <div className="bg-neutral-900 min-h-screen p-8">
+        {isLoggedIn ? (
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-semibold text-white mb-8">
+        <div className="flex justify-between items-center mb-8">
+        <div className="text-xl md:text-3xl font-semibold text-white ">
           Appointment Dashboard
-        </h1>
+        </div>
+        <button className="bg-white text-black rounded border-black px-2 font-medium py-2 md:text-md text-sm" onClick={handleLogout}>
+            Logout
+        </button>
+        </div>
 
         {/* Date Selection Buttons */}
         <div className="flex space-x-4 mb-6">
@@ -134,6 +149,7 @@ export const Dashboard: React.FC = () => {
           </Table>
         </div>
       </div>
+      ): <div className="text-white">Please login to view dashboard</div>}
     </div>
   );
 };
