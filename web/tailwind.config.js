@@ -12,7 +12,10 @@ export default {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
-  		colors: {}
+  		colors: {},
+      backgroundImage: {
+          'axiom-pattern': "url('/axiom-pattern.png')"
+      }
   	}
   },
   plugins: [require("tailwindcss-animate")],

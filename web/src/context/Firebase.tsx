@@ -69,7 +69,8 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
     email: string,
     password: string,
     name: string,
-    address: string
+    address: string,
+    isDoctor: boolean,
   ): Promise<UserCredential> => {
     // createUserWithEmailAndPassword(auth, email, password);
     try {
@@ -78,7 +79,7 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
         email,
         password
       );
-      const isDoctor = true;
+      
       await setDoc(doc(db, "users", response?.user?.uid), {
         userId: response?.user?.uid,
         email: response?.user?.email,

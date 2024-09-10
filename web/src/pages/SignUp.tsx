@@ -22,7 +22,7 @@ export const SignUp = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     console.log("signing in")
-    const result = await signupUserWithEmailAndPassword(email, password, name, address)
+    const result = await signupUserWithEmailAndPassword(email, password, name, address, true)
     console.log(result)
     console.log("success")
     toast({
@@ -33,10 +33,10 @@ export const SignUp = () => {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-100">
+    <div className="flex items-center justify-center min-h-screen bg-black bg-axiom-pattern font-mono">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Sign Up</CardTitle>
+          <CardTitle className='text-xl'>Sign Up</CardTitle>
           <CardDescription>Create your account to get started.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -59,7 +59,7 @@ export const SignUp = () => {
                 <Input id="hospital" placeholder="Park Hospital, New Delhi, Delhi" value={address} onChange={(e) => setAddress(e.target.value)} required />
               </div>
             </div>
-            <Button className="w-full mt-6" type="submit">Sign Up</Button>
+            <Button className="w-full mt-6 font-semibold" type="submit">Sign Up</Button>
           </form>
         </CardContent>
         <Toaster />

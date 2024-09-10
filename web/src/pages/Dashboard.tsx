@@ -10,13 +10,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { format, addDays } from "date-fns";
 import { useFirebase } from "@/context/Firebase";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type Appointment = {
   id: number;
   patientName: string;
   time: string;
-  date: string; 
+  date: string;
 };
 
 // Hardcoded appointment data with date
@@ -59,7 +59,7 @@ const appointmentsData: Appointment[] = [
   },
 ];
 
-export const Dashboard: React.FC = () => {
+export const Dashboard = () => {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(today);
   const { isLoggedIn, logout } = useFirebase();
@@ -69,87 +69,94 @@ export const Dashboard: React.FC = () => {
   const dateOptions = [today, addDays(today, 1), addDays(today, 2)];
 
   const filteredAppointments = appointmentsData.filter(
-    (appointment) =>
-      appointment.date === format(selectedDate, "MMM d, yyyy")
+    (appointment) => appointment.date === format(selectedDate, "MMM d, yyyy")
   );
 
   const handleLogout = async () => {
     await logout();
-    navigate("/signin")
-  }
+    navigate("/signin");
+  };
 
   return (
-    <div className="bg-neutral-900 min-h-screen p-8">
-        {isLoggedIn ? (
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-        <div className="text-xl md:text-3xl font-semibold text-white ">
-          Appointment Dashboard
-        </div>
-        <button className="bg-white text-black rounded border-black px-2 font-medium py-2 md:text-md text-sm" onClick={handleLogout}>
-            Logout
-        </button>
-        </div>
-
-        {/* Date Selection Buttons */}
-        <div className="flex space-x-4 mb-6">
-          {dateOptions.map((date) => (
-            <Button
-              key={date.toISOString()}
-              onClick={() => setSelectedDate(date)}
-              className={`${
-                format(selectedDate, "MMM d, yyyy") === format(date, "MMM d, yyyy")
-                  ? "bg-white text-black hover:bg-white"
-                  : "bg-neutral-800 text-white border-neutral-700 hover:bg-white hover:text-black"
-              }`}
+    <div className="bg-black from-black to-[#4D4855] min-h-screen p-8 font-mono">
+      {isLoggedIn ? (
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <Link to="/">
+              <div className="text-xl md:text-3xl font-semibold text-white ">
+                Appointment Dashboard
+              </div>
+            </Link>
+            <button
+              className="bg-white text-black rounded border-black px-2 font-medium py-2 md:text-md text-sm"
+              onClick={handleLogout}
             >
-              {format(date, "MMM d, yyyy")}
-            </Button>
-          ))}
-        </div>
+              Logout
+            </button>
+          </div>
 
-        <div className="bg-neutral-800 rounded-lg shadow-lg">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-neutral-300 text-left font-semibold py-2 px-6">
-                  Name
-                </TableHead>
-                <TableHead className="text-neutral-300 text-left font-semibold px-6 py-2">
-                  Time
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredAppointments.length > 0 ? (
-                filteredAppointments.map((appointment) => (
-                  <TableRow
-                    key={appointment.id}
-                    className="hover:bg-neutral-700 transition-colors duration-150 border-b border-neutral-700 cursor-pointer"
-                  >
-                    <TableCell className="text-white font-medium py-4 px-6">
-                      {appointment.patientName}
-                    </TableCell>
-                    <TableCell className="text-white font-medium py-4 px-6">
-                      {appointment.time}
+          {/* Date Selection Buttons */}
+          <div className="flex space-x-4 mb-6">
+            {dateOptions.map((date) => (
+              <Button
+                key={date.toISOString()}
+                onClick={() => setSelectedDate(date)}
+                className={`${
+                  format(selectedDate, "MMM d, yyyy") ===
+                  format(date, "MMM d, yyyy")
+                    ? "bg-white text-black hover:bg-white"
+                    : "bg-neutral-800 text-white border-neutral-700 hover:bg-white hover:text-black"
+                }`}
+              >
+                {format(date, "MMM d, yyyy")}
+              </Button>
+            ))}
+          </div>
+
+          <div className="bg-neutral-800 rounded-lg shadow-lg">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-neutral-300 text-left font-semibold py-2 px-6">
+                    Name
+                  </TableHead>
+                  <TableHead className="text-neutral-300 text-left font-semibold px-6 py-2">
+                    Time
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredAppointments.length > 0 ? (
+                  filteredAppointments.map((appointment) => (
+                    <TableRow
+                      key={appointment.id}
+                      className="hover:bg-neutral-700 transition-colors duration-150 border-b border-neutral-700 cursor-pointer"
+                    >
+                      <TableCell className="text-white font-medium py-4 px-6">
+                        {appointment.patientName}
+                      </TableCell>
+                      <TableCell className="text-white font-medium py-4 px-6">
+                        {appointment.time}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={2}
+                      className="text-center text-neutral-400 py-4"
+                    >
+                      No appointments for this date.
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={2}
-                    className="text-center text-neutral-400 py-4"
-                  >
-                    No appointments for this date.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
-      </div>
-      ): <div className="text-white">Please login to view dashboard</div>}
+      ) : (
+        <div className="text-white">Please login to view dashboard</div>
+      )}
     </div>
   );
 };

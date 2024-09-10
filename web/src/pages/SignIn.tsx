@@ -14,7 +14,7 @@ export const SignIn = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
 
-  const { signinUserWithEmailAndPass } = useFirebase();
+  const { signinUserWithEmailAndPass, isLoggedIn } = useFirebase();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,15 +27,15 @@ export const SignIn = () => {
     navigate('/dashboard') 
   }
 
-  // useEffect(() => {
-  //   if(isLoggedIn) {
-  //     navigate('/dashboard')
-  //   }
+  useEffect(() => {
+    if(isLoggedIn) {
+      navigate('/dashboard')
+    }
     
-  // }, [isLoggedIn, navigate])
+  }, [isLoggedIn, navigate])
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-100">
+    <div className="flex items-center justify-center min-h-screen bg-black bg-axiom-pattern font-mono">
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle className="text-xl">Sign In</CardTitle>
