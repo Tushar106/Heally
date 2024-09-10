@@ -6,7 +6,7 @@ import Fontisto from '@expo/vector-icons/Fontisto';
 
 export function Services({navigation}) {
     const services = [{ name:"Hospitals",type: 'hospital', icon: <FontAwesome5 name="hospital-alt" size={40} color="green" /> }, {
-        type: "doctors",
+        type: "doctor",
         name:"Doctors",
         icon: <Fontisto name="doctor" size={40} color="white" />
     }, {

@@ -5,17 +5,17 @@ import SearchItems from '../Components/Search/SearchItems';
 import { useEffect, useState } from 'react';
 import Loading from '../Components/Loading';
 export default function SearchScreen({ navigation, route }) {
-    const searchType=route.params.searchElement
+    const searchType = route.params.searchElement
     const [search, setSearch] = useState(route.params.searchElement)
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     useEffect(() => {
-        if(searchType!==""){
+        if (searchType !== "") {
+            setLoading(true)
             fetchData(searchType)
         }
     }, [search])
     const fetchData = (type) => {
-        setLoading(true)
         console.log(searchType)
         fetch("https://heallyserver-ba802f7f8155.herokuapp.com/nearby_places", {
             method: "POST",
@@ -30,7 +30,7 @@ export default function SearchScreen({ navigation, route }) {
         })
             .then((response) => response.json())
             .then((responseData) => {
-                console.log(responseData)
+                // console.log(responseData)
                 setData(responseData);
                 setLoading(false)
             })
@@ -38,9 +38,9 @@ export default function SearchScreen({ navigation, route }) {
     return (
         <ScrollView style={style.container}>
             <SearchBar search={search} setSearch={setSearch} />
-            {!loading ?
+            {!loading && data ?
                 <>
-                    <SearchItems navigation={navigation} data={data} />
+                    <SearchItems navigation={navigation} data={data[searchType]} searchType={searchType} />
                 </> :
                 <Loading size={100} />}
         </ScrollView>
