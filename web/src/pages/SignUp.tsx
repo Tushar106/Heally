@@ -138,11 +138,11 @@ export const SignUp = () => {
                       <SelectValue placeholder="Select a specialty" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="general">General</SelectItem>
-                      <SelectItem value="psychiatry">Psychiatry</SelectItem>
-                      <SelectItem value="cardiology">Cardiology</SelectItem>
-                      <SelectItem value="orthopedics">Orthopedics</SelectItem>
-                      <SelectItem value="ophthalmology">
+                      <SelectItem value="General">General</SelectItem>
+                      <SelectItem value="Psychiatry">Psychiatry</SelectItem>
+                      <SelectItem value="Cardiology">Cardiology</SelectItem>
+                      <SelectItem value="Orthopedics">Orthopedics</SelectItem>
+                      <SelectItem value="Ophthalmology">
                         Ophthalmology
                       </SelectItem>
                     </SelectContent>
