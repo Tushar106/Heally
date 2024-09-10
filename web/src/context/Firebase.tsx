@@ -35,6 +35,7 @@ interface FirebaseContextType {
   uploadProfilePicture: (file: File) => Promise<string>;
   updateProfileInfo: (about: string, photoUrl?: string) => Promise<void>;
   fetchUserProfile: () => Promise<DocumentData>;
+  fetchUserAppointments: () => Promise<DocumentData[]>;
   isLoggedIn: boolean;
   logout: () => Promise<void>;
 }
@@ -101,6 +102,31 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
   
       return userDoc.data(); // Return the user's data including profile image URL and about section
     };
+
+    // In firebase.tsx
+
+const fetchUserAppointments = async () => {
+  if (!user) throw new Error("User not authenticated");
+
+  const userDocRef = doc(db, "users", user.uid);
+  const userDoc = await getDoc(userDocRef);
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    const appointmentUIDs = userData.appointments || [];
+    const appointments = await Promise.all(
+      appointmentUIDs.map(async (uid: string) => {
+        const appointmentDoc = await getDoc(doc(db, "appointments", uid));
+        return appointmentDoc.exists() ? appointmentDoc.data() : null;
+      })
+    );
+
+    return appointments.filter((appointment) => appointment !== null);
+  }
+
+  return [];
+};
+
 
   const signupUserWithEmailAndPassword = async (
     email: string,
@@ -204,6 +230,7 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
         uploadProfilePicture,
         updateProfileInfo,
         fetchUserProfile,
+        fetchUserAppointments,
         isLoggedIn,
         logout,
       }}

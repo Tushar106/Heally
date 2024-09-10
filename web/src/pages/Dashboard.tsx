@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { format, addDays } from "date-fns";
+import { format, addDays, parse } from "date-fns";
 import { useFirebase } from "@/context/Firebase";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -21,76 +21,33 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
 type Appointment = {
-  id: number;
+  patientid: string;
   patientName: string;
   time: string;
-  date: string;
+  date: string; // Store as a string for easier manipulation
 };
-
-// Hardcoded appointment data with date
-const appointmentsData: Appointment[] = [
-  {
-    id: 1,
-    patientName: "Alice Johnson",
-    time: "09:00 AM",
-    date: format(new Date(), "MMM d, yyyy"),
-  },
-  {
-    id: 2,
-    patientName: "Bob Smith",
-    time: "10:30 AM",
-    date: format(new Date(), "MMM d, yyyy"),
-  },
-  {
-    id: 3,
-    patientName: "Carol Williams",
-    time: "02:00 PM",
-    date: format(addDays(new Date(), 1), "MMM d, yyyy"),
-  },
-  {
-    id: 4,
-    patientName: "David Brown",
-    time: "03:30 PM",
-    date: format(addDays(new Date(), 1), "MMM d, yyyy"),
-  },
-  {
-    id: 5,
-    patientName: "Eve Davis",
-    time: "05:00 PM",
-    date: format(addDays(new Date(), 2), "MMM d, yyyy"),
-  },
-  {
-    id: 6,
-    patientName: "Franklin Lee",
-    time: "06:30 PM",
-    date: format(addDays(new Date(), 2), "MMM d, yyyy"),
-  },
-];
 
 export const Dashboard = () => {
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(today);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [about, setAbout] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [currentProfileUrl, setCurrentProfileUrl] = useState<string | null>(
     null
   );
   const [loading, setLoading] = useState(false);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
   const {
     isLoggedIn,
     logout,
     uploadProfilePicture,
     updateProfileInfo,
     fetchUserProfile,
+    fetchUserAppointments,
   } = useFirebase();
   const navigate = useNavigate();
-
-  // Define the next two days for button options
-  const dateOptions = [today, addDays(today, 1), addDays(today, 2)];
-
-  const filteredAppointments = appointmentsData.filter(
-    (appointment) => appointment.date === format(selectedDate, "MMM d, yyyy")
-  );
 
   const handleLogout = async () => {
     await logout();
@@ -107,13 +64,12 @@ export const Dashboard = () => {
   const handleText = async () => {
     try {
       let imageUrl: string | undefined;
-
+      setLoading(true);
       // Upload image to Firebase storage and get the URL
       if (profileImage) {
         imageUrl = await uploadProfilePicture(profileImage); // Upload profile image and get URL
       }
 
-      setLoading(true);
       await updateProfileInfo(about, imageUrl);
       setLoading(false);
 
@@ -125,18 +81,55 @@ export const Dashboard = () => {
     }
   };
 
+  const dateOptions = [today, addDays(today, 1), addDays(today, 2)];
+  const formatDate = (dateStr: string) => {
+    return parse(dateStr, "EEEE dd MMM yyyy", new Date());
+  };
+  
+
+  const handleDate = (date: Date) => {
+    setSelectedDate(date);
+    const filtered = appointments.filter((appointment) => {
+      const appointmentDate = formatDate(appointment.date);
+
+      return format(appointmentDate, "MMM d, yyyy") === format(date, "MMM d, yyyy");
+    });
+    setFilteredAppointments(filtered)
+  };
+
+
+
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const userData = await fetchUserProfile();
-        setCurrentProfileUrl(userData.profileImage || null);
-        setAbout(userData.about || "");
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+      if (isLoggedIn) {
+        try {
+          const userData = await fetchUserProfile();
+          setCurrentProfileUrl(userData.profileImage || null);
+          setName(userData.name || "");
+          setAbout(userData.about || "");
+
+          const userAppointments = await fetchUserAppointments();
+          const parsedAppointments = userAppointments.map((app) => ({
+            patientid: app.patientid,
+            time: app.time,
+            date: app.date,
+            patientName: app.patientName,
+          }));
+          setAppointments(parsedAppointments);
+        
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
       }
     };
-    if (isLoggedIn) fetchUserData();
-  }, [fetchUserProfile, isLoggedIn]);
+    fetchUserData();
+  }, [fetchUserProfile, isLoggedIn, fetchUserAppointments]);
+
+  useEffect(() => {
+    if (appointments.length > 0) {
+      handleDate(today); // Filter appointments for today's date by default
+    }
+  }, [appointments]);
 
   return (
     <div className="bg-black from-black to-[#4D4855] min-h-screen p-8 font-mono">
@@ -162,7 +155,7 @@ export const Dashboard = () => {
                         />
                         <AvatarFallback>A</AvatarFallback>
                       </Avatar>
-
+                      <div className="mx-auto text-white">{name}</div>
                       <Input
                         className="bg-black text-white"
                         type="file"
@@ -199,7 +192,7 @@ export const Dashboard = () => {
             {dateOptions.map((date) => (
               <Button
                 key={date.toISOString()}
-                onClick={() => setSelectedDate(date)}
+                onClick={() => handleDate(date)}
                 className={`${
                   format(selectedDate, "MMM d") === format(date, "MMM d")
                     ? "bg-white text-black hover:bg-white"
@@ -227,7 +220,7 @@ export const Dashboard = () => {
                 {filteredAppointments.length > 0 ? (
                   filteredAppointments.map((appointment) => (
                     <TableRow
-                      key={appointment.id}
+                      key={appointment.patientid}
                       className="hover:bg-neutral-700 transition-colors duration-150 border-b border-neutral-700 cursor-pointer"
                     >
                       <TableCell className="text-white font-medium py-4 px-6">
