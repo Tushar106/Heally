@@ -4,6 +4,7 @@ import { SignIn } from "./pages/SignIn"
 import { FirebaseProvider } from '@/context/Firebase';
 import { Dashboard } from "./pages/Dashboard";
 import { Home } from "./pages/Home";
+import { Toaster } from "./components/ui/toaster";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route element={<Navigate to = "/"/>} path = "*" />
         </Routes>
       </BrowserRouter>
+      <Toaster />
       </FirebaseProvider>
     </>
   )

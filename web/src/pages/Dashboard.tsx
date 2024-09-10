@@ -74,7 +74,7 @@ export const Dashboard = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/signin");
+    navigate("/home");
   };
 
   return (
