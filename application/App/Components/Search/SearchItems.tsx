@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function SearchItems({ navigation, data, searchType, sort, filter }) {
-  const [element, setElements] = useState(data);
+  const [element, setElements] = useState([]);
   const handlePress = (data) => {
     // console.log(data)
     navigation.navigate('Doctor Profile', {
@@ -26,18 +26,25 @@ export default function SearchItems({ navigation, data, searchType, sort, filter
     return string[0].toUpperCase() + string.slice(1);
   }
   useEffect(() => {
-    setElements(data);
-    if (sort == "highLow") {
-      setElements(data.sort((a, b) => a.fees - b.fees))
+    let filteredData = data;
+
+    // Apply filter
+    // Add more filter conditions as needed
+
+    // Apply sort
+    if (filter == 'General') {
+      filteredData = data
     }
-    if (sort =="lowHigh") {
-      setElements(data.sort((a, b) => b.fees - a.fees))
+    if (filter == 'Cardiology') {
+      filteredData = data.filter(item => item.specialty == 'Cardiology');
     }
-    if(sort=='none'){
-      setElements(data)
+    if (filter == 'Psychiatry') {
+      filteredData = data.filter(item => item.specialty == 'Psychiatry');
     }
-    console.log(element)
-    console.log(sort)
+    if (filter == 'Ophthalmology') {
+      filteredData = data.filter(item => item.specialty == 'Ophthalmology');
+    }
+    setElements(filteredData);
   }, [sort, filter])
 
 
@@ -72,6 +79,14 @@ export default function SearchItems({ navigation, data, searchType, sort, filter
             </TouchableOpacity>
           )
         })
+        }
+        {element.length == 0 &&
+          <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 7 }}>
+            <Text style={{
+              color: "white"
+            }
+            }>No Doctor Found</Text>
+          </View>
         }
       </View>
     </ScrollView>

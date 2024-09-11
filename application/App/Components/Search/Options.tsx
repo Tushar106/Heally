@@ -32,11 +32,11 @@ export default function Options({sort,setSort,filter,setFilter}) {
         <View style={{ flex: 1, flexDirection: "row" }}>
             <View style={{ width: "100%" }}>
                 <View style={{ padding: 10, margin: 10, borderRadius: 5, borderColor: "white", backgroundColor: "white", display: "flex", justifyContent: "center", alignItems: "center", flexDirection: 'row' }}>
-                    <TouchableOpacity style={{ flex: 1, justifyContent: "center", alignItems: "center", flexDirection: "row", gap: 5 }} onPress={handleSortBy}>
+                    {/* <TouchableOpacity style={{ flex: 1, justifyContent: "center", alignItems: "center", flexDirection: "row", gap: 5 }} onPress={handleSortBy}>
                         <FontAwesome name="unsorted" size={24} color="black" />
                         <Text style={{ fontSize: 15, fontWeight: "500" }}>Sort by</Text>
                     </TouchableOpacity>
-                    <SortModal bottomSheetModalRef={sortSheetModalRef} snapPoints={snapPoints} sort={sort} setSort={setSort} />
+                    <SortModal bottomSheetModalRef={sortSheetModalRef} snapPoints={snapPoints} sort={sort} setSort={setSort} /> */}
                     <TouchableOpacity style={{ flex: 1, flexDirection: "row", justifyContent: "center", alignItems: "center" }} onPress={handleFilterBy}>
                         <Feather name="filter" size={24} color="black" />
                         <Text style={{ fontSize: 15, fontWeight: "500" }}>Filter</Text>

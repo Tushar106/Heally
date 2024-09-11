@@ -29,8 +29,6 @@ export default function HomeScreen({ navigation }) {
   if(location==null){
     return (<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Loading size={100} /></View>)
   }
-
-  console.log(location)
   return (
     <View style={style.container}>
       <Header />
