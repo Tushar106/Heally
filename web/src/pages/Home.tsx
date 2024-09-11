@@ -20,13 +20,13 @@ export const Home = () => {
         {!isLoggedIn ? (
           <div className="space-y-4">
             <Link to="signup" className="block">
-              <button className="w-1/2 mx-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center justify-between group">
-                <span>Create an account</span>
+              <button className="md:w-1/2 mx-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center justify-between group">
+                <span >Create an account</span>
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </Link>
             <Link to="signin" className="block">
-              <button className="w-1/2 mx-auto bg-white bg-opacity-10 hover:bg-opacity-20 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center justify-between group">
+              <button className="md:w-1/2 mx-auto bg-white bg-opacity-10 hover:bg-opacity-20 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center justify-between group">
                 <span>Sign in</span>
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>

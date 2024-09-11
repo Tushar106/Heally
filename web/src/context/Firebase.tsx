@@ -13,8 +13,9 @@ import {
   UserCredential,
   signOut,
 } from "firebase/auth";
+import { getDownloadURL, ref, uploadBytes, getStorage } from "firebase/storage";
 import { auth, db } from "../../firebaseConfig";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, DocumentData, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 
 interface FirebaseContextType {
@@ -31,9 +32,15 @@ interface FirebaseContextType {
     email: string,
     password: string
   ) => Promise<UserCredential>;
+  uploadProfilePicture: (file: File) => Promise<string>;
+  updateProfileInfo: (about: string, photoUrl?: string) => Promise<void>;
+  fetchUserProfile: () => Promise<DocumentData>;
+  fetchUserAppointments: () => Promise<DocumentData[]>;
   isLoggedIn: boolean;
   logout: () => Promise<void>;
 }
+
+const storage = getStorage();
 
 const FirebaseContext = createContext<FirebaseContextType | undefined>(
   undefined
@@ -60,12 +67,66 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) setUser(user);
-      else setUser(null);
-    });
-  });
+  const uploadProfilePicture = async (file: File): Promise<string> => {
+    if (!user) throw new Error("User not authenticated");
+
+    const fileRef = ref(storage, `image/${user.uid}`);
+    await uploadBytes(fileRef, file);
+    const downloadURL = await getDownloadURL(fileRef);
+    return downloadURL;
+  };
+
+  const updateProfileInfo = async (about: string, photoUrl?: string): Promise<void> => {
+    if (!user) throw new Error("User not authenticated");
+
+    const userDocRef = doc(db, "users", user.uid);
+
+    const updatedData: { about: string; profileImage?: string } = { about };
+    if (photoUrl) {
+      updatedData.profileImage = photoUrl;
+    }
+
+    await updateDoc(userDocRef, updatedData);
+  };
+
+    // New function to fetch the user's profile data
+    const fetchUserProfile = async (): Promise<DocumentData> => {
+      if (!user) throw new Error("User not authenticated");
+  
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+  
+      if (!userDoc.exists()) {
+        throw new Error("User profile does not exist");
+      }
+  
+      return userDoc.data(); // Return the user's data including profile image URL and about section
+    };
+
+    // In firebase.tsx
+
+const fetchUserAppointments = async () => {
+  if (!user) throw new Error("User not authenticated");
+
+  const userDocRef = doc(db, "users", user.uid);
+  const userDoc = await getDoc(userDocRef);
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    const appointmentUIDs = userData.appointments || [];
+    const appointments = await Promise.all(
+      appointmentUIDs.map(async (uid: string) => {
+        const appointmentDoc = await getDoc(doc(db, "appointments", uid));
+        return appointmentDoc.exists() ? appointmentDoc.data() : null;
+      })
+    );
+
+    return appointments.filter((appointment) => appointment !== null);
+  }
+
+  return [];
+};
+
 
   const signupUserWithEmailAndPassword = async (
     email: string,
@@ -166,6 +227,10 @@ export const FirebaseProvider = ({ children }: { children: ReactNode }) => {
       value={{
         signupUserWithEmailAndPassword,
         signinUserWithEmailAndPass,
+        uploadProfilePicture,
+        updateProfileInfo,
+        fetchUserProfile,
+        fetchUserAppointments,
         isLoggedIn,
         logout,
       }}
