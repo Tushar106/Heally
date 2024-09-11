@@ -1,7 +1,8 @@
 # Heally - Healthcare Appointment Booking Platform
 
 
-Heally is a comprehensive healthcare appointment booking platform developed for the Veersa Hacakthon 2025. It connects patients with healthcare providers, streamlining the process of finding and booking medical appointments.
+Heally is a comprehensive healthcare appointment booking platform developed for the Veersa Hackathon 2025. It connects patients with healthcare providers, streamlining the process of finding and booking medical appointments.
+Web Portal Link - https://heally.vercel.app/
 
 ## 🌟 Features
 
