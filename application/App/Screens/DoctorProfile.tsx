@@ -63,7 +63,7 @@ export default function DoctorProfile({ navigation, route }) {
             return alert('Selected busy slot.');
         }
         if (selectedDateObj >= currentTime || (selectedDateObj.toDateString() === new Date().toDateString() && selectedTimeObj > new Date())) {
-            const formattedDate = selectedDateObj.toLocaleString('default', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
+            const formattedDate = selectedDateObj.toLocaleString('en-US', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
             navigation.navigate('Confirmation', {
                 selectedDate: formattedDate.replaceAll(",",""),
                 selectedTime: timeSlot[selectedTime],
@@ -101,7 +101,7 @@ export default function DoctorProfile({ navigation, route }) {
         if (selectedDate == 1) {
             selectedDateObj = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
         }
-        const formattedDate = selectedDateObj.toLocaleString('default', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
+        const formattedDate = selectedDateObj.toLocaleString('en-US', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
         return formattedDate
     }
     if (loading) {
@@ -166,8 +166,8 @@ export default function DoctorProfile({ navigation, route }) {
                         <View style={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", flexWrap: 'wrap' }}>
                             {timeSlot.map((time, index) => {
                                 const isPast = selectedDate === 0 && new Date().getHours() >= startTime + index;
-                                const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${time}`);
-                                // console.log(`${formatDate(dates[selectedDate])}-${time}`)
+                                const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${time}`.replaceAll(",",""));
+                                // console.log(`${formatDate(dates[selectedDate])}-${time}`,isBusy)
                                 return (
                                     <View style={{ width: "33.33%", padding: 5 }} key={index}>
                                         <TouchableOpacity
