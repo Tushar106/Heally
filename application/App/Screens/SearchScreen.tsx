@@ -39,6 +39,8 @@ export default function SearchScreen({ navigation, route }) {
                 setLoading(false)
             })
     }
+    
+
     return (
         <ScrollView style={style.container}>
             <SearchBar search={search} setSearch={setSearch} />

@@ -10,8 +10,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function SearchItems({ navigation, data, searchType }) {
   const handlePress = (data) => {
     // console.log(data)
-    navigation.navigate('Doctor Profile',{
-      data:data
+    navigation.navigate('Doctor Profile', {
+      data: data
     })
   }
   if (data == undefined) {
@@ -22,8 +22,8 @@ export default function SearchItems({ navigation, data, searchType }) {
     Linking.openURL(url);
   };
   function capitalizeFLetter(string) {
-    return string[0].toUpperCase() +string.slice(1);
-}
+    return string[0].toUpperCase() + string.slice(1);
+  }
   return (
     <ScrollView>
       <View style={{ flex: 1, flexDirection: "column", padding: 10, gap: 10 }}>
@@ -31,14 +31,14 @@ export default function SearchItems({ navigation, data, searchType }) {
           return (
             <TouchableOpacity key={index} style={{ width: "100%", backgroundColor: "white", padding: 10, borderRadius: 5, gap: 10 }} onPress={() => { searchType === "doctor" ? handlePress(item) : openGoogleMaps(item.address) }}>
               <View style={{ display: "flex", flexDirection: 'row', justifyContent: "center", alignItems: "center", borderBottomColor: "black", borderBottomWidth: .5, padding: 5 }}>
-                <Image source={{ uri: item["image_url"] }} width={60} height={60} borderRadius={100} />
+                <Image source={{ uri: searchType == 'doctor' ? item.profileImage : item["image_url"] }} width={60} height={60} borderRadius={100} />
                 <View style={{ flex: 1, margin: 5 }}>
                   <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                     <Text style={{ color: "green" }}>{capitalizeFLetter(searchType)}</Text>
-                    {searchType!="doctor"&&<StarRating rating={item.rating} />}
+                    {searchType != "doctor" && <StarRating rating={item.rating} />}
                   </View>
                   <Text style={{ fontSize: 18, fontWeight: "700" }}>{item.name}</Text>
-                  {searchType=='doctor'&&<Text>{item.specialty}</Text>}
+                  {searchType == 'doctor' && <Text>{item.specialty}</Text>}
                 </View>
               </View>
               <View style={{ paddingLeft: 5, display: "flex", gap: 7 }}>

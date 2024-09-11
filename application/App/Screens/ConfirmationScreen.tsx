@@ -45,7 +45,7 @@ export default function ConfirmationScreen({ navigation, route }) {
         <View style={{ flex: 1, flexDirection: "column", padding: 10 }}>
             <View style={{ flex: 1, width: "100%", backgroundColor: "#f3f6f5", padding: 10, borderRadius: 5, gap: 10 }}>
                 <View style={{ display: "flex", flexDirection: 'row', justifyContent: "center", alignItems: "center" }}>
-                    <Image source={{ uri: "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg" }} width={60} height={60} borderRadius={100} />
+                    <Image source={{ uri: doctor.profileImage?doctor.profileImage:"https://plus.unsplash.com/premium_photo-1658506671316-0b293df7c72b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZG9jdG9yfGVufDB8fDB8fHww" }} width={60} height={60} borderRadius={100} />
                     <View style={{ flex: 1, margin: 5 }}>
                         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <Text style={{ color: "green" }}>Doctor</Text>
