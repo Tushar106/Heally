@@ -79,6 +79,7 @@ export const SignUp = () => {
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
+                  name="name"
                   placeholder="John Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -89,6 +90,7 @@ export const SignUp = () => {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="john@example.com"
                   value={email}
@@ -100,6 +102,7 @@ export const SignUp = () => {
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -110,6 +113,7 @@ export const SignUp = () => {
                 <Label htmlFor="hospital">Address</Label>
                 <Input
                   id="hospital"
+                  name="hospital"
                   placeholder="Park Hospital, New Delhi, Delhi"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
@@ -121,16 +125,18 @@ export const SignUp = () => {
                   <Label htmlFor="fees">Fees</Label>
                   <Input
                     id="fees"
+                    name="fees"
                     placeholder="500"
                     onChange={(e) => setFees(Number(e.target.value))}
                     className="w-3/4"
                     required
                   />
                 </div>
-                <div className="flex flex-col space-y-1.5">
+                <div className="flex flex-col space-y-1.5 select">
                   <Label htmlFor="specialty">Specialty</Label>
                   <Select
                     value={specialty}
+                    name="specialty"
                     onValueChange={(value) => setSpecialty(value)}
                     required
                   >
