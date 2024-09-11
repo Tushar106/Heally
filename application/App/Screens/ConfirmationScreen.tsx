@@ -22,7 +22,8 @@ export default function ConfirmationScreen({ navigation, route }) {
                 time: selectedTime,
                 status: 'confirmed',
                 doctorId:doctor.userId,
-                patientId:user.uid
+                patientId:user.uid,
+                address:doctor.address
             })
             // Update the user document with the appointment UID
             await updateDoc(doc(db, 'users', user.uid), {

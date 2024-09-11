@@ -5,12 +5,13 @@ import { FontAwesome } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
+import Loading from '../Components/Loading';
 
 export default function DoctorProfile({ navigation, route }) {
     const [selectedDate, setSelectedDate] = useState(0);
     const [selectedTime, setSelectedTime] = useState(-1);
     const [busyDates, setBusyDates] = useState([]);
-
+    const [loading,setLoading]=useState(false);
     const doctor = route.params.data
 
     const dates = ['Today', 'Tomorrow',new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toDateString(), new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toDateString()];
@@ -78,6 +79,7 @@ export default function DoctorProfile({ navigation, route }) {
     }
 
     const fetchBookedDates = async () => {
+        setLoading(true);
         const appointments = doctor.appointments || [];
         const busyDatesSet = new Set();
 
@@ -91,6 +93,7 @@ export default function DoctorProfile({ navigation, route }) {
             }
         }
         setBusyDates(Array.from(busyDatesSet));
+        setLoading(false)
     }
     function formatDate(date) {
         var selectedDateObj = new Date(date);
@@ -104,6 +107,13 @@ export default function DoctorProfile({ navigation, route }) {
         return formattedDate
     }
 
+    if(loading){
+        return(
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <Loading size={100} />
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={{ flex: 1, flexDirection: "column", padding: 10 }}>
@@ -138,7 +148,7 @@ export default function DoctorProfile({ navigation, route }) {
                             <Ionicons name="timer-outline" size={30} color="green" />
                             <View style={{ display: "flex", flexDirection: "column" }}>
                                 <Text style={{ fontSize: 12, color: "grey", fontWeight: "400" }}>Duration</Text>
-                                <Text>15 Minutes</Text>
+                                <Text>30 Minutes</Text>
                             </View>
                         </View>
                     </View>

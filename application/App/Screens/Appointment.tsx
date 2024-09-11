@@ -1,7 +1,21 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
-const CalendarItem = ({ day, date, time, title, location, attendees }) => {
+import { AuthContext } from '../Components/Context/AuthContext';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
+import Loading from '../Components/Loading';
+const AppointmentItem = ({ data }) => {
+  const parseDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-US', options);
+    const [day, dayNumber, month, year] = formattedDate.split(' ');
+    return { day, date: `${dayNumber} ${month}` };
+  };
+
+  const { day, date } = parseDate(data.date);
+  // const check=checkPast(data.date,data.time)
   return (
     <View style={styles.container}>
       <View style={styles.dayContainer}>
@@ -9,9 +23,18 @@ const CalendarItem = ({ day, date, time, title, location, attendees }) => {
         <Text style={styles.date}>{date}</Text>
       </View>
       <View style={styles.details}>
-        <Text>h</Text>
+        <View style={styles.timeContainer}>
+          <AntDesign name="clockcircleo" size={16} color="#333" style={styles.icon} />
+          <Text style={styles.time}>{data.time}</Text>
+        </View>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{data.doctorName}</Text>
+        </View>
+        <View style={styles.locationContainer}>
+          <AntDesign name="enviromento" size={16} color="#333" style={styles.icon} />
+          <Text style={styles.location}>{data.address}</Text>
+        </View>
       </View>
-      
     </View>
   );
 };
@@ -94,20 +117,57 @@ const Appointment = () => {
       ],
     },
   ];
+  const { user } = useContext(AuthContext);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    fetchUserAppointments();
+  }, [])
 
+  const fetchUserAppointments = async () => {
+    setAppointments([])
+    setLoading(true)
+    try {
+      const docRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(docRef);
+      const userData = await docSnap.data();
+      const apps = await userData.appointments;
+      await apps.map(async (appointment) => {
+        const appRef = doc(db, 'appointments', appointment)
+        const appSnap = await getDoc(appRef);
+        const appointmentData = await appSnap.data();
+        setAppointments((prev)=>[...prev,appointmentData])
+      })
+      setLoading(false);
+    } catch (error) {
+      alert(error)
+    }
+  }
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Loading size={100} />
+      </View>
+    )
+  }
+// console.log(appointments)
   return (
     <ScrollView style={styles.calendar}>
-      {calendarData.map((item, index) => (
-        <CalendarItem key={index} {...item} />
-      ))}
+      {appointments.map((item, index) => {
+        return (
+          <AppointmentItem key={index} data={item} />
+        )
+      }
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  details:{
-    flex:2,
-    
+  details: {
+    flex: 1,
+    justifyContent:"center",
+    // alignItems:"center"
   },
   calendar: {
     flex: 1,
@@ -141,8 +201,8 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flexDirection: 'column',
-    justifyContent:"center",
-    alignItems:"center",
+    justifyContent: "center",
+    alignItems: "center",
     flex: 2
   },
   timeContainer: {
@@ -191,124 +251,3 @@ const styles = StyleSheet.create({
 });
 
 export default Appointment;
-
-// import React from 'react';
-// import { View, Text, StyleSheet, Image } from 'react-native';
-
-// const Appointment = () => {
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.ticket}>
-//         <View style={styles.header}>
-//           <Image
-//             // source={require('./germany-flag.png')} 
-//             style={styles.flag}
-//           />
-//           <Text style={styles.location}>Aucklan - New Zealand</Text>
-//         </View>
-//         <View style={styles.details}>
-//           <Text style={styles.time}>Time</Text>
-//           <Text style={styles.timeValue}>10:00 - 10:30</Text>
-//         </View>
-//         <View style={styles.details}>
-//           <Text style={styles.bookingId}>Booking ID</Text>
-//           <Text style={styles.bookingIdValue}>WTSOO12</Text>
-//         </View>
-//         <View style={styles.details}>
-//           <Text style={styles.price}>Price</Text>
-//           <Text style={styles.priceValue}>300 MYR</Text>
-//         </View>
-//       </View>
-//       <View style={styles.date}>
-//         <Text style={styles.dateMonth}>AUG</Text>
-//         <Text style={styles.dateDay}>04</Text>
-//         <Text style={styles.dateYear}>2020</Text>
-//       </View>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     padding: 20,
-//   },
-//   ticket: {
-//     backgroundColor: '#4285F4',
-//     padding: 20,
-//     borderRadius: 10,
-//     flex: 1,
-//     marginRight: 10,
-//   },
-//   header: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     marginBottom: 15,
-//   },
-//   flag: {
-//     width: 20,
-//     height: 20,
-//     marginRight: 10,
-//   },
-//   location: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     color: '#fff',
-//   },
-//   details: {
-//     marginBottom: 10,
-//   },
-//   time: {
-//     fontSize: 14,
-//     color: '#fff',
-//     marginBottom: 5,
-//   },
-//   timeValue: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     color: '#fff',
-//   },
-//   bookingId: {
-//     fontSize: 14,
-//     color: '#fff',
-//     marginBottom: 5,
-//   },
-//   bookingIdValue: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     color: '#fff',
-//   },
-//   price: {
-//     fontSize: 14,
-//     color: '#fff',
-//     marginBottom: 5,
-//   },
-//   priceValue: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     color: '#fff',
-//   },
-//   date: {
-//     backgroundColor: '#fff',
-//     padding: 20,
-//     borderRadius: 10,
-//     width: 100,
-//   },
-//   dateMonth: {
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//     color: '#4285F4',
-//   },
-//   dateDay: {
-//     fontSize: 36,
-//     fontWeight: 'bold',
-//     color: '#4285F4',
-//   },
-//   dateYear: {
-//     fontSize: 14,
-//     color: '#4285F4',
-//   },
-// });
-
-// export default Appointment;
