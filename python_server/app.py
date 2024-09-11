@@ -8,7 +8,8 @@ from firebase_admin import credentials, firestore
 
 cred = credentials.Certificate(os.environ['FIREBASE_API_KEY'])
 firebase_admin.initialize_app(cred)
-# Firebase setup 
+
+# Set up firebase client
 db = firestore.client()
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -41,7 +42,7 @@ def index():
 def get_nearby_places():
     data = request.get_json()
     lat, lng = data.get('lat'), data.get('lng')
-    place_type = data.get('type', '').lower()
+    place_type = data.get('type', '').lower()  # Type can be hospital, pharmacy, lab, doctor, etc.
 
     if not lat or not lng  or not place_type:
         return jsonify({'error': 'Address or place type not provided'}), 400
@@ -64,7 +65,7 @@ def search_nearby_places(place_type, keyword=None):
         keyword = 'pharmacy' if place_type == 'pharmacy' else keyword
 
         # Search for nearby places using the type and optional keyword
-        nearby_places = gmaps.places_nearby(location=(lat, lng), radius=5000, type=place_type, keyword=keyword)
+        nearby_places = gmaps.places_nearby(location=(lat, lng), radius=20000, type=place_type, keyword=keyword)
 
         # Prepare the list of places to return
         places = []
@@ -134,15 +135,15 @@ def find_nearest_doctors(cus_lat = None, cus_lng = None):
         print(f"API Error: {e}")
         return jsonify({'error': str(e)}), 500
 
-    # Filter doctors within a 10km radius
+    # Filter doctors within a 20km radius
     nearby_doctors = []
     for i, element in enumerate(distance_result['rows'][0]['elements']):
         if element['status'] == 'OK':
             distance_in_meters = element['distance']['value']
             distance_in_km = distance_in_meters / 1000
 
-            # Check if the doctor is within the 10km radius
-            if distance_in_km <= 10:
+            # Check if the doctor is within the 20km radius
+            if distance_in_km <= 20:
                 doctor_info[i]['distance_km'] = distance_in_km
                 nearby_doctors.append(doctor_info[i])
 

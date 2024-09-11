@@ -250,7 +250,13 @@ export const Dashboard = () => {
           </div>
         </div>
       ) : (
-        <div className="text-white">Please login to view dashboard</div>
+        <div className="flex flex-col gap-4 justify-center items-center">
+          <div className="text-white mx-auto">Please login to view dashboard</div>
+          <button
+            className="bg-white text-black rounded border-black px-6 font-medium py-2 md:text-md text-sm" onClick={()=> navigate('/home')}>
+            Home
+          </button>
+        </div>
       )}
     </div>
   );

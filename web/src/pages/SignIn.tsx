@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ export const SignIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { signinUserWithEmailAndPass, isLoggedIn } = useFirebase();
+  const { signinUserWithEmailAndPass } = useFirebase();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +58,7 @@ export const SignIn = () => {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="john@example.com"
                   value={email}
@@ -69,6 +70,7 @@ export const SignIn = () => {
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

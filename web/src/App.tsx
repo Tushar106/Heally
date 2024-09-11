@@ -5,11 +5,15 @@ import { FirebaseProvider } from '@/context/Firebase';
 import { Dashboard } from "./pages/Dashboard";
 import { Home } from "./pages/Home";
 import { Toaster } from "./components/ui/toaster";
+import { Helmet } from 'react-helmet'
 
 function App() {
 
   return (
     <>
+    <Helmet>
+      <title>Helly</title>
+    </Helmet>
     <FirebaseProvider>
       <BrowserRouter>
         <Routes>

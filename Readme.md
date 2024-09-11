@@ -60,9 +60,8 @@ heally/
 
 ### Python Server
 1. Navigate to the `python_server` directory
-2. Create and activate a virtual environment
-3. Run `pip install -r requirements.txt` to install dependencies
-4. Start the server with `python main.py`
+2. Run `pip install -r requirements.txt` to install dependencies
+3. Start the server with `python app.py` if requirement is running on local machine else push to Heroku
 
 ### Web Portal
 1. Navigate to the `web` directory
