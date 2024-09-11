@@ -36,7 +36,6 @@ export default function SearchScreen({ navigation, route }) {
         })
             .then((response) => response.json())
             .then((responseData) => {
-                console.log(responseData)
                 setData(responseData);
                 setLoading(false)
             })

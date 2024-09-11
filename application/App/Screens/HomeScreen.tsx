@@ -9,24 +9,23 @@ import { AuthContext } from '../Components/Context/AuthContext';
 import Loading from '../Components/Loading';
 
 export default function HomeScreen({ navigation }) {
-  const {location, setLocation} = useContext(AuthContext)
+  const { location, setLocation } = useContext(AuthContext)
   // const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
-
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert('Permission to access location was denied');
+      if (status != 'granted') {
+        alert('Permission to access location was denied');
         return;
       }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+      console.log(location)
     })();
   }, []);
 
-  if(location==null){
+  if (location == null) {
     return (<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Loading size={100} /></View>)
   }
   return (
