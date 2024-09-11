@@ -11,6 +11,8 @@ export default function SearchScreen({ navigation, route }) {
     const [loading, setLoading] = useState(false);
     const {location}=useContext(AuthContext);
     const [data, setData] = useState([]);
+    const [sort,setSort]=useState("none");
+    const [filter,setFilter]=useState("General");
     useEffect(() => {
         console.log(location)
         if (searchType !== "") {
@@ -39,15 +41,16 @@ export default function SearchScreen({ navigation, route }) {
                 setLoading(false)
             })
     }
-    
+
+ 
 
     return (
         <ScrollView style={style.container}>
             <SearchBar search={search} setSearch={setSearch} />
-            {searchType=='doctor'&&<Options/>}
+            {searchType=='doctor'&&<Options sort={sort} setSort={setSort} filter={filter} setFilter={setFilter}/>}
             {!loading && data ?
                 <>
-                    <SearchItems navigation={navigation} data={data[searchType]} searchType={searchType} />
+                    <SearchItems navigation={navigation} data={data[searchType]} searchType={searchType} sort={sort} filter={filter}  />
                 </> :
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Loading size={100} /></View>}
         </ScrollView>

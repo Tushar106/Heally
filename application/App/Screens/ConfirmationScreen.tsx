@@ -13,6 +13,7 @@ export default function ConfirmationScreen({ navigation, route }) {
     const {user}=useContext(AuthContext);
         const handleConfirm = async() => {
         setLoading(true);
+        console.log(selectedDate,selectedTime)
         try {
             // Add the appointment to the appointments collection
             const appointment= await addDoc(collection(db, "appointments"), {

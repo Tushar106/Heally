@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, Pressable, StyleSheet, Linking } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -7,7 +7,8 @@ import Loading from '../Loading';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-export default function SearchItems({ navigation, data, searchType }) {
+export default function SearchItems({ navigation, data, searchType, sort, filter }) {
+  const [element, setElements] = useState(data);
   const handlePress = (data) => {
     // console.log(data)
     navigation.navigate('Doctor Profile', {
@@ -24,10 +25,26 @@ export default function SearchItems({ navigation, data, searchType }) {
   function capitalizeFLetter(string) {
     return string[0].toUpperCase() + string.slice(1);
   }
+  useEffect(() => {
+    setElements(data);
+    if (sort == "highLow") {
+      setElements(data.sort((a, b) => a.fees - b.fees))
+    }
+    if (sort =="lowHigh") {
+      setElements(data.sort((a, b) => b.fees - a.fees))
+    }
+    if(sort=='none'){
+      setElements(data)
+    }
+    console.log(element)
+    console.log(sort)
+  }, [sort, filter])
+
+
   return (
     <ScrollView>
       <View style={{ flex: 1, flexDirection: "column", padding: 10, gap: 10 }}>
-        {data.map((item, index) => {
+        {element.map((item, index) => {
           return (
             <TouchableOpacity key={index} style={{ width: "100%", backgroundColor: "white", padding: 10, borderRadius: 5, gap: 10 }} onPress={() => { searchType === "doctor" ? handlePress(item) : openGoogleMaps(item.address) }}>
               <View style={{ display: "flex", flexDirection: 'row', justifyContent: "center", alignItems: "center", borderBottomColor: "black", borderBottomWidth: .5, padding: 5 }}>
@@ -47,6 +64,9 @@ export default function SearchItems({ navigation, data, searchType }) {
                     flexShrink: 1,
                     maxWidth: '90%',
                   }}>{item.address}</Text>
+                </View>
+                <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 7 }}>
+                  <FontAwesome name="money" size={20} color="green" /><Text>{item.fees}</Text>
                 </View>
               </View>
             </TouchableOpacity>
