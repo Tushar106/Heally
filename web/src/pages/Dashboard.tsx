@@ -38,7 +38,9 @@ export const Dashboard = () => {
   );
   const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
+  const [filteredAppointments, setFilteredAppointments] = useState<
+    Appointment[]
+  >([]);
   const {
     isLoggedIn,
     logout,
@@ -85,30 +87,30 @@ export const Dashboard = () => {
   const formatDate = (dateStr: string) => {
     return parse(dateStr, "EEEE dd MMM yyyy", new Date());
   };
-  
 
   const handleDate = (date: Date) => {
     setSelectedDate(date);
     const filtered = appointments.filter((appointment) => {
       const appointmentDate = formatDate(appointment.date);
 
-      return format(appointmentDate, "MMM d, yyyy") === format(date, "MMM d, yyyy");
+      return (
+        format(appointmentDate, "MMM d, yyyy") === format(date, "MMM d, yyyy")
+      );
     });
-    setFilteredAppointments(filtered)
+    setFilteredAppointments(filtered);
   };
-
-
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoading(true);
       if (isLoggedIn) {
         try {
           const userData = await fetchUserProfile();
           setCurrentProfileUrl(userData.profileImage || null);
           setName(userData.name || "");
           setAbout(userData.about || "");
-
           const userAppointments = await fetchUserAppointments();
+          setLoading(false);
           const parsedAppointments = userAppointments.map((app) => ({
             patientid: app.patientid,
             time: app.time,
@@ -116,8 +118,8 @@ export const Dashboard = () => {
             patientName: app.patientName,
           }));
           setAppointments(parsedAppointments);
-        
         } catch (error) {
+          setLoading(false);
           console.error("Error fetching user data:", error);
         }
       }
@@ -218,9 +220,9 @@ export const Dashboard = () => {
               </TableHeader>
               <TableBody>
                 {filteredAppointments.length > 0 ? (
-                  filteredAppointments.map((appointment) => (
+                  filteredAppointments.map((appointment, index) => (
                     <TableRow
-                      key={appointment.patientid}
+                      key={index}
                       className="hover:bg-neutral-700 transition-colors duration-150 border-b border-neutral-700 cursor-pointer"
                     >
                       <TableCell className="text-white font-medium py-4 px-6">
@@ -237,7 +239,9 @@ export const Dashboard = () => {
                       colSpan={2}
                       className="text-center text-neutral-400 py-4"
                     >
-                      No appointments for this date.
+                      {loading
+                        ? "Loading..."
+                        : "No appointments for this date."}
                     </TableCell>
                   </TableRow>
                 )}

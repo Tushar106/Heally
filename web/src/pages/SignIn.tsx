@@ -42,12 +42,6 @@ export const SignIn = () => {
     }
   };
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/dashboard");
-    }
-  }, [isLoggedIn, navigate]);
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-black bg-axiom-pattern font-mono">
       <Card className="w-[350px]">
