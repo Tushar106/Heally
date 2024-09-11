@@ -41,7 +41,7 @@ export const AuthContextProvider = ({ children }) => {
             const response = await signInWithEmailAndPassword(auth, email, password);
             return { success: true }
         } catch (error) {
-            const msg = error.message
+            var msg = error.message
             if (error.message == "Firebase: Error (auth/invalid-email).")
                 msg = "Invalid Email"
             if (error.message == "Firebase: Error (auth/invalid-credential).")
@@ -78,11 +78,14 @@ export const AuthContextProvider = ({ children }) => {
             console.log(response)
             return { success: true, data: response?.user }
         } catch (error) {
-            const msg = error.message
+            var msg = error.message
+            console.log(msg)
             if (error.message == "Firebase: Error (auth/email-already-in-use).")
                 msg = "Email already in Use"
             if (error.message == "Firebase: Error (auth/invalid-email).")
                 msg = "Invalid Email"
+            if(error.message=="Firebase: Password should be at least 6 characters (auth/weak-password).")
+                msg="Password should at least be 8 Characters"
             return { success: false, message: msg }
         }
     }

@@ -45,7 +45,7 @@ const Login = () => {
                 alert("Enter Email");
                 return
             }
-            if (password.length <= 0) {
+            if (password.length < 8) {
                 alert("Password length must be atleast 8");
                 return
             }
@@ -63,27 +63,27 @@ const Login = () => {
     const handleRegister = async () => {
         try {
             if (email.length == 0) {
-                alert("Enter Email");
+                alert("Enter your Email");
                 return
             }
-            if (password.length <= 0) {
+            if (password.length < 8) {
                 alert("Password length must be atleast 8");
                 return
             }
             if (name.length <= 0) {
-                alert("Password length must be atleast 8");
+                alert("Provide your name");
                 return
             }
             bottomSheetRegisterRef.current.close();
             setLoading(true)
             let response = await register(email, password, name)
+            await setLoading(false);
             if (response.success == false) {
                 return alert(response.message)
             }
-            await setLoading(false);
         } catch (error) {
-            setLoading(true)
             console.log(error);
+            setLoading(true)
         }
     }
     
