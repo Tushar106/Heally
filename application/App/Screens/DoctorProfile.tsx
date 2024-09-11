@@ -65,7 +65,7 @@ export default function DoctorProfile({ navigation, route }) {
         if (selectedDateObj >= currentTime || (selectedDateObj.toDateString() === new Date().toDateString() && selectedTimeObj > new Date())) {
             const formattedDate = selectedDateObj.toLocaleString('default', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
             navigation.navigate('Confirmation', {
-                selectedDate: formattedDate,
+                selectedDate: formattedDate.replaceAll(",",""),
                 selectedTime: timeSlot[selectedTime],
                 doctor: doctor
             });
@@ -85,8 +85,8 @@ export default function DoctorProfile({ navigation, route }) {
 
             if (appointmentSnap.exists()) {
                 const appointmentData = appointmentSnap.data();
-                console.log(appointmentData)
-                busyDatesSet.add(`${appointmentData.date}-${appointmentData.time}`);
+                let d=`${appointmentData.date}-${appointmentData.time}`
+                busyDatesSet.add(d.replaceAll(",",""));
             }
         }
         setBusyDates(Array.from(busyDatesSet));
@@ -94,6 +94,7 @@ export default function DoctorProfile({ navigation, route }) {
     }
      function formatDate(date) {
         var selectedDateObj = new Date(date);
+        
         if (selectedDate == 0) {
             selectedDateObj = new Date();
         }
@@ -166,7 +167,7 @@ export default function DoctorProfile({ navigation, route }) {
                             {timeSlot.map((time, index) => {
                                 const isPast = selectedDate === 0 && new Date().getHours() >= startTime + index;
                                 const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${time}`);
-                                console.log(`${formatDate(dates[selectedDate])}-${time}`)
+                                // console.log(`${formatDate(dates[selectedDate])}-${time}`)
                                 return (
                                     <View style={{ width: "33.33%", padding: 5 }} key={index}>
                                         <TouchableOpacity
