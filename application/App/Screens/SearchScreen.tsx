@@ -14,14 +14,12 @@ export default function SearchScreen({ navigation, route }) {
     const [sort,setSort]=useState("none");
     const [filter,setFilter]=useState("General");
     useEffect(() => {
-        console.log(location)
         if (searchType !== "") {
             setLoading(true)
             fetchData(searchType)
         }
     }, [search])
     const fetchData = (type) => {
-        console.log(searchType)
         fetch("https://heallyserver-ba802f7f8155.herokuapp.com/nearby_places", {
             method: "POST",
             headers: {

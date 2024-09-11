@@ -10,7 +10,6 @@ import Loading from '../Components/Loading';
 
 export default function HomeScreen({ navigation }) {
   const { location, setLocation } = useContext(AuthContext)
-  // const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -21,7 +20,6 @@ export default function HomeScreen({ navigation }) {
       }
         let location = await Location.getCurrentPositionAsync({});
         setLocation(location);
-      console.log(location)
     })();
   }, []);
 

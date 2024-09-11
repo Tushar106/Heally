@@ -11,65 +11,14 @@ export default function ConfirmationScreen({ navigation, route }) {
     const { selectedDate, selectedTime, doctor } = route.params;
     const [loading, setLoading] = useState(false);
     const { user } = useContext(AuthContext);
+    console.log(selectedDate,selectedTime)
     const handleConfirm = async () => {
         setLoading(true);
         try {
-            // Add the appointment to the appointments collection
-
-            // await runTransaction(db, async (transaction) => {
-            //     const appointmentDoc = await transaction.get(appointmentRef);
-
-            //     if (appointmentDoc.exists) {
-            //         throw new Error("Appointment slot is already booked.");
-            //     }
-
-            //     transaction.set(appointmentRef, {
-            //         doctorName: doctor.name,
-            //         patientName: user.displayName,
-            //         date: selectedDate,
-            //         time: selectedTime,
-            //         status: 'confirmed',
-            //         doctorId: doctor.userId,
-            //         patientId: user.uid,
-            //         address: doctor.address
-            //     });
-            //     await updateDoc(doc(db, 'users', user.uid), {
-            //         appointments: arrayUnion(await appointment.id),
-            //     });
-
-            //     // Update the doctor document with the appointment UID
-            //     await updateDoc(doc(db, 'users', doctor.userId), {
-            //         appointments: arrayUnion(await appointment.id),
-            //     });
-            // });
-
-
-
-            // const appointment = await addDoc(collection(db, "appointments"), {
-            //     doctorName: doctor.name,
-            //     patientName: user.displayName,
-            //     date: selectedDate,
-            //     time: selectedTime,
-            //     status: 'confirmed',
-            //     doctorId: doctor.userId,
-            //     patientId: user.uid,
-            //     address: doctor.address
-            // })
-            // // Update the user document with the appointment UID
-            // await updateDoc(doc(db, 'users', user.uid), {
-            //     appointments: arrayUnion(await appointment.id),
-            // });
-
-            // // Update the doctor document with the appointment UID
-            // await updateDoc(doc(db, 'users', doctor.userId), {
-            //     appointments: arrayUnion(await appointment.id),
-            // });
-
-
             const appointmentRef = doc(collection(db, "appointments"));
             const userRef = doc(db, "users", user.uid);
             const doctRef = doc(db, "users", doctor.userId);
-
+            
             await runTransaction(db, async (transaction) => {
                 transaction.set(appointmentRef, {
                     doctorName: doctor.name,
