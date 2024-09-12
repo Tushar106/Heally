@@ -85,7 +85,7 @@ export const Dashboard = () => {
 
   const dateOptions = [today, addDays(today, 1), addDays(today, 2)];
   const formatDate = (dateStr: string) => {
-    return parse(dateStr, "EEEE dd MMM yyyy", new Date());
+    return parse(dateStr, "EEEE MMM dd yyyy", new Date());
   };
 
   const handleDate = (date: Date) => {
@@ -118,6 +118,7 @@ export const Dashboard = () => {
             patientName: app.patientName,
           }));
           setAppointments(parsedAppointments);
+          console.log("P",parsedAppointments)
         } catch (error) {
           setLoading(false);
           console.error("Error fetching user data:", error);
