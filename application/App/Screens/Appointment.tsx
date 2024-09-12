@@ -40,83 +40,6 @@ const AppointmentItem = ({ data }) => {
 };
 
 const Appointment = () => {
-  const calendarData = [
-    {
-      day: 'Wed',
-      date: '28',
-      time: '09:00 - 09:30',
-      title: '30min call meeting Peer <> Leslie',
-      location: 'Online',
-      attendees: [
-        // { avatar: require('./attendee1.png') },
-        // { avatar: require('./attendee2.png') },
-      ],
-    },
-    {
-      day: 'Thu',
-      date: '29',
-      time: '11:15 - 11:45',
-      title: '30min call meeting Olivia, Liam <> Alban',
-      location: 'Online',
-      attendees: [
-        // { avatar: require('./attendee3.png') },
-        // { avatar: require('./attendee4.png') },
-        // { avatar: require('./attendee5.png') },
-      ],
-    },
-    {
-      day: 'Fri',
-      date: '30',
-      time: '15:20 - 16:20',
-      title: 'Livn Product Demo',
-      location: 'Wework Paris, ...',
-      attendees: [
-        // { avatar: require('./attendee6.png') },
-        // { avatar: require('./attendee7.png') },
-        // { avatar: require('./attendee8.png') },
-        // { avatar: require('./attendee9.png') },
-      ],
-    },
-    {
-      day: 'Fri',
-      date: '30',
-      time: '15:20 - 16:20',
-      title: 'Livn Product Demo',
-      location: 'Wework Paris, ...',
-      attendees: [
-        // { avatar: require('./attendee6.png') },
-        // { avatar: require('./attendee7.png') },
-        // { avatar: require('./attendee8.png') },
-        // { avatar: require('./attendee9.png') },
-      ],
-    },
-    {
-      day: 'Fri',
-      date: '30',
-      time: '15:20 - 16:20',
-      title: 'Livn Product Demo',
-      location: 'Wework Paris, ...',
-      attendees: [
-        // { avatar: require('./attendee6.png') },
-        // { avatar: require('./attendee7.png') },
-        // { avatar: require('./attendee8.png') },
-        // { avatar: require('./attendee9.png') },
-      ],
-    },
-    {
-      day: 'Fri',
-      date: '30',
-      time: '15:20 - 16:20',
-      title: 'Livn Product Demo',
-      location: 'Wework Paris, ...',
-      attendees: [
-        // { avatar: require('./attendee6.png') },
-        // { avatar: require('./attendee7.png') },
-        // { avatar: require('./attendee8.png') },
-        // { avatar: require('./attendee9.png') },
-      ],
-    },
-  ];
   const { user } = useContext(AuthContext);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -136,7 +59,7 @@ const Appointment = () => {
         const appRef = doc(db, 'appointments', appointment)
         const appSnap = await getDoc(appRef);
         const appointmentData = await appSnap.data();
-        setAppointments((prev)=>[...prev,appointmentData])
+        setAppointments((prev) => [...prev, appointmentData])
       })
       setLoading(false);
     } catch (error) {
@@ -150,15 +73,20 @@ const Appointment = () => {
       </View>
     )
   }
-// console.log(appointments)
+  // console.log(appointments)
   return (
     <ScrollView style={styles.calendar}>
-      {appointments.map((item, index) => {
+      {appointments ? appointments.map((item, index) => {
         return (
           <AppointmentItem key={index} data={item} />
         )
       }
-      )}
+      ) : <View style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 7 }}>
+        <Text style={{
+          color: "white"
+        }
+        }>No Doctor Found</Text>
+      </View>}
     </ScrollView>
   );
 };
@@ -166,7 +94,7 @@ const Appointment = () => {
 const styles = StyleSheet.create({
   details: {
     flex: 1,
-    justifyContent:"center",
+    justifyContent: "center",
     // alignItems:"center"
   },
   calendar: {
