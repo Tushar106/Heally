@@ -102,7 +102,7 @@ export default function DoctorProfile({ navigation, route }) {
             selectedDateObj = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
         }
         const formattedDate = selectedDateObj.toLocaleString('en-US', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
-        return formattedDate
+        return formattedDate.replaceAll(",","")
     }
     if (loading) {
         return (
