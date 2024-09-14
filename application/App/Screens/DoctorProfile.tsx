@@ -74,11 +74,14 @@ export default function DoctorProfile({ navigation, route }) {
         for (const appointmentId of appointments) {
             const appointmentRef = doc(db, 'appointments', appointmentId);
             const appointmentSnap = await getDoc(appointmentRef);
-
+            const now=new Date();
             if (appointmentSnap.exists()) {
                 const appointmentData = appointmentSnap.data();
-                let d = `${appointmentData.date}-${appointmentData.time}`
-                busyDatesSet.add(d.replaceAll(",", ""));
+                var temp=new Date(appointmentData.date);
+                if(temp.getDate()>=now.getDate()){
+                    let d = `${appointmentData.date}-${appointmentData.time}`
+                    busyDatesSet.add(d.replaceAll(",", ""));
+                }
             }
         }
         setBusyDates(Array.from(busyDatesSet));
@@ -159,7 +162,6 @@ export default function DoctorProfile({ navigation, route }) {
                             {timeSlot.map((time, index) => {
                                 const isPast = selectedDate === 0 && new Date().getHours() >= startTime + index;
                                 const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${time}`.replaceAll(",", ""));
-                                // console.log(`${formatDate(dates[selectedDate])}-${time}`,isBusy)
                                 return (
                                     <View style={{ width: "33.33%", padding: 5 }} key={index}>
                                         <TouchableOpacity
