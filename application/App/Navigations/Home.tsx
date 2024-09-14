@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeScreen from '../Screens/HomeScreen'
-import Profile from '../Screens/Profile'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'

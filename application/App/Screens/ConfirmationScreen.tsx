@@ -11,7 +11,7 @@ export default function ConfirmationScreen({ navigation, route }) {
     const { selectedDate, selectedTime, doctor } = route.params;
     const [loading, setLoading] = useState(false);
     const { user } = useContext(AuthContext);
-    console.log(selectedDate,selectedTime)
+    // console.log(selectedDate,selectedTime)
     const handleConfirm = async () => {
         setLoading(true);
         try {

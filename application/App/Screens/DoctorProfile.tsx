@@ -23,13 +23,6 @@ export default function DoctorProfile({ navigation, route }) {
         const hour = startTime + index;
         return `${hour % 12 || 12}:${'00'} ${hour < 12 ? 'AM' : 'PM'}`;
     });
-    const [currentTime, setCurrentTime] = useState(new Date());
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 60000); // Update every minute
-        return () => clearInterval(timer); // Clean up on component unmount
-    }, []);
     useEffect(() => {
         navigation.getParent()?.setOptions({
             tabBarStyle: {
@@ -56,16 +49,15 @@ export default function DoctorProfile({ navigation, route }) {
         if (selectedDate == 1) {
             selectedDateObj = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
         }
-        const selectedTimeObj = new Date();
-        selectedTimeObj.setHours(parseInt(timeSlot[selectedTime].split(':')[0]), 0, 0, 0);
-        const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${timeSlot[selectedTime]}`);
-        if (isBusy) {
-            return alert('Selected busy slot.');
-        }
-        if (selectedDateObj >= currentTime || (selectedDateObj.toDateString() === new Date().toDateString() && selectedTimeObj > new Date())) {
+        selectedDateObj.setHours(parseInt(timeSlot[selectedTime].split(':')[0]), 0, 0, 0);
+        if (selectedDateObj >= new Date()) {
+            const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${timeSlot[selectedTime]}`);
+            if (isBusy) {
+                return alert('Selected busy slot.');
+            }
             const formattedDate = selectedDateObj.toLocaleString('en-US', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
             navigation.navigate('Confirmation', {
-                selectedDate: formattedDate.replaceAll(",",""),
+                selectedDate: formattedDate.replaceAll(",", ""),
                 selectedTime: timeSlot[selectedTime],
                 doctor: doctor
             });
@@ -85,16 +77,16 @@ export default function DoctorProfile({ navigation, route }) {
 
             if (appointmentSnap.exists()) {
                 const appointmentData = appointmentSnap.data();
-                let d=`${appointmentData.date}-${appointmentData.time}`
-                busyDatesSet.add(d.replaceAll(",",""));
+                let d = `${appointmentData.date}-${appointmentData.time}`
+                busyDatesSet.add(d.replaceAll(",", ""));
             }
         }
         setBusyDates(Array.from(busyDatesSet));
         setLoading(false)
     }
-     function formatDate(date) {
+    function formatDate(date) {
         var selectedDateObj = new Date(date);
-        
+
         if (selectedDate == 0) {
             selectedDateObj = new Date();
         }
@@ -102,7 +94,7 @@ export default function DoctorProfile({ navigation, route }) {
             selectedDateObj = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
         }
         const formattedDate = selectedDateObj.toLocaleString('en-US', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
-        return formattedDate.replaceAll(",","")
+        return formattedDate.replaceAll(",", "")
     }
     if (loading) {
         return (
@@ -166,7 +158,7 @@ export default function DoctorProfile({ navigation, route }) {
                         <View style={{ display: 'flex', flexDirection: "row", justifyContent: "space-between", flexWrap: 'wrap' }}>
                             {timeSlot.map((time, index) => {
                                 const isPast = selectedDate === 0 && new Date().getHours() >= startTime + index;
-                                const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${time}`.replaceAll(",",""));
+                                const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${time}`.replaceAll(",", ""));
                                 // console.log(`${formatDate(dates[selectedDate])}-${time}`,isBusy)
                                 return (
                                     <View style={{ width: "33.33%", padding: 5 }} key={index}>
@@ -212,3 +204,4 @@ const styles = StyleSheet.create({
         borderColor: 'red',
     },
 });
+
