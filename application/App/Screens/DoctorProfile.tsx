@@ -49,19 +49,36 @@ export default function DoctorProfile({ navigation, route }) {
         if (selectedDate == 1) {
             selectedDateObj = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
         }
-        selectedDateObj.setHours(parseInt(timeSlot[selectedTime].split(':')[0]), 0, 0, 0);
+
+        const [time, period] = timeSlot[selectedTime].split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+
+        // Convert to 24-hour format if necessary
+        if (period === 'PM' && hours < 12) {
+            hours += 12;
+        } else if (period === 'AM' && hours === 12) {
+            hours = 0;
+        }
+
+        selectedDateObj.setHours(hours, minutes, 0, 0);
+
+
+        // selectedDateObj.setHours(parseInt(timeSlot[selectedTime].split(':')[0]), 0, 0, 0);
         if (selectedDateObj >= new Date()) {
             const isBusy = busyDates.includes(`${formatDate(dates[selectedDate])}-${timeSlot[selectedTime]}`);
             if (isBusy) {
                 return alert('Selected busy slot.');
             }
+            console.log(selectedDateObj.toLocaleTimeString())
             const formattedDate = selectedDateObj.toLocaleString('en-US', { weekday: 'long', day: '2-digit', month: 'short', year: 'numeric' });
             navigation.navigate('Confirmation', {
                 selectedDate: formattedDate.replaceAll(",", ""),
+                // selectedDate:selectedDateObj,
                 selectedTime: timeSlot[selectedTime],
                 doctor: doctor
             });
         } else {
+
             alert('Selected date and time is in the past. Please select a future date and time.');
         }
     }
@@ -74,11 +91,11 @@ export default function DoctorProfile({ navigation, route }) {
         for (const appointmentId of appointments) {
             const appointmentRef = doc(db, 'appointments', appointmentId);
             const appointmentSnap = await getDoc(appointmentRef);
-            const now=new Date();
+            const now = new Date();
             if (appointmentSnap.exists()) {
                 const appointmentData = appointmentSnap.data();
-                var temp=new Date(appointmentData.date);
-                if(temp.getDate()>=now.getDate()){
+                var temp = new Date(appointmentData.date);
+                if (temp.getDate() >= now.getDate()) {
                     let d = `${appointmentData.date}-${appointmentData.time}`
                     busyDatesSet.add(d.replaceAll(",", ""));
                 }

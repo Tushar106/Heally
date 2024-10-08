@@ -9,10 +9,10 @@ export default function SearchScreen({ navigation, route }) {
     const searchType = route.params.searchElement
     const [search, setSearch] = useState(route.params.searchElement)
     const [loading, setLoading] = useState(false);
-    const {location}=useContext(AuthContext);
+    const { location } = useContext(AuthContext);
     const [data, setData] = useState([]);
-    const [sort,setSort]=useState("none");
-    const [filter,setFilter]=useState("General");
+    const [sort, setSort] = useState("none");
+    const [filter, setFilter] = useState("General");
     useEffect(() => {
         if (searchType !== "") {
             setLoading(true)
@@ -20,34 +20,41 @@ export default function SearchScreen({ navigation, route }) {
         }
     }, [search])
     const fetchData = (type) => {
-        fetch("https://heallyserver-ba802f7f8155.herokuapp.com/nearby_places", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                lat:location.coords.latitude,
-                lng:location.coords.longitude,
-                type: type
-            }),
-        })
-            .then((response) => response.json())
-            .then((responseData) => {
-                setData(responseData);
-                setLoading(false)
+        try {
+            fetch("https://heally.onrender.com/nearby_places", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    lat: location.coords.latitude,
+                    lng: location.coords.longitude,
+                    type: type
+                }),
             })
+                .then((response) => response.json())
+                .then((responseData) => {
+                    console.log(responseData)
+                    setData(responseData);
+                    setLoading(false)
+                })
+        } catch (error) {
+            console.log(error)
+
+        }
+
     }
 
- 
+
 
     return (
         <ScrollView style={style.container}>
             <SearchBar search={search} setSearch={setSearch} />
-            {searchType=='doctor'&&<Options sort={sort} setSort={setSort} filter={filter} setFilter={setFilter}/>}
+            {searchType == 'doctor' && <Options sort={sort} setSort={setSort} filter={filter} setFilter={setFilter} />}
             {!loading && data ?
                 <>
-                    <SearchItems navigation={navigation} data={data[searchType]} searchType={searchType} sort={sort} filter={filter}  />
+                    <SearchItems navigation={navigation} data={data[searchType]} searchType={searchType} sort={sort} filter={filter} />
                 </> :
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}><Loading size={100} /></View>}
         </ScrollView>

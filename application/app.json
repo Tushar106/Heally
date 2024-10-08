@@ -17,6 +17,12 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Heally to use your location."
         }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "The app needs to access your calendar."
+        }
       ]
     ],
     "assetBundlePatterns": [
