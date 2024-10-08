@@ -6,6 +6,8 @@ import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+load_dotenv()
+
 cred = credentials.Certificate(os.environ['FIREBASE_API_KEY'])
 firebase_admin.initialize_app(cred)
 
@@ -14,7 +16,6 @@ db = firestore.client()
 app = Flask(__name__)
 CORS(app)  # Enable CORS
 
-load_dotenv()
 
 app = Flask(__name__)
 
